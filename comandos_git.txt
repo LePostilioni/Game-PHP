@@ -7,4 +7,7 @@ git status
 :::Para "commitar" os arquivos novos em uma nova "versão"::::
 git commit -m "nome do commit"
 
+:::Mandar todas as modificações do local para o Github:::
+git push origin main
+
 :::\o/:::
