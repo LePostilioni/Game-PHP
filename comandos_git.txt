@@ -1,0 +1,10 @@
+:::Quando adicionar um novo arquivo:::
+git add .
+
+:::Para ver o status do nosso git local:::
+git status
+
+:::Para "commitar" os arquivos novos em uma nova "versão"::::
+git commit -m "nome do commit"
+
+:::\o/:::
