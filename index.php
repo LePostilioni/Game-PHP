@@ -76,13 +76,8 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
     <!-- Para usar os icones do Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        body {
-            background-color: #333;
-            color: #fff;
-        }
-
         .container {
-            margin-top: 100px;
+            margin-top: 1px;
         }
 
         h1,
@@ -160,7 +155,19 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
     <title>Página Inicial</title>
 </head>
 
-<body>
+<body data-bs-theme="dark">
+<!-- Botão de mudar o tema dark ou light -->
+<div class="form-check form-switch mx-4">
+    <i class="fa-solid fa-circle-half-stroke"></i>
+      <input
+        class="form-check-input p-2"
+        type="checkbox"
+        role="switch"
+        id="flexSwitchCheckChecked"
+        checked
+        onclick="myFunction()"
+      />
+    </div>
     <!-- Conteúdo da página -->
     <div class="container text-center">
         <div class="row">
@@ -237,6 +244,14 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
             <?php echo $footerText; ?>
         </div>
     </footer>
+    <!-- Script do dark theme do bootstrap -->
+    <script>
+      function myFunction() {
+        var element = document.body;
+        element.dataset.bsTheme =
+          element.dataset.bsTheme == "light" ? "dark" : "light";
+      }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="css/bootstrap.js"></script>
 
