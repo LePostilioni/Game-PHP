@@ -73,6 +73,8 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/bootstrap.css">
+    <!-- Para usar os icones do Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             background-color: #333;
@@ -176,10 +178,12 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="login-form">
                       <h3 id="login-heading">Login</h3>
                         <div class="form-group">
+                            <i class="fa-solid fa-envelope"></i>
                             <label for="email-login">Email:</label>
                             <input type="email" class="form-control" id="email-login" name="email-login" required>
                         </div>
                         <div class="form-group">
+                            <i class="fa-solid fa-lock"></i>
                             <label for="senha-login">Senha:</label>
                             <input type="password" class="form-control" id="senha-login" name="senha-login" required>
                         </div>
@@ -191,15 +195,18 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
                         <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="cadastro-form" style="display: none;">
                             <h3>Cadastre-se</h3>
                             <div class="form-group">
+                                <i class="fa-solid fa-user"></i>
                                 <label for="nome">Nome:</label>
                                 <input type="text" class="form-control" id="nome" name="nome" required pattern="[A-Za-z\s-]{10,30}">
-                                <small>Somente letras. Mínimo de 10 caracteres e máximo de 30.</small>
+                                <small>Nome e sobrenome, somente letras. Mínimo de 10 caracteres e máximo de 30.</small>
                             </div>
                             <div class="form-group">
+                                <i class="fa-solid fa-envelope"></i>
                                 <label for="email">Email:</label>
                                 <input type="email" class="form-control" id="email" name="email" required>
                             </div>
                             <div class="form-group">
+                                <i class="fa-solid fa-lock"></i>
                                 <label for="senha">Senha:</label>
                                 <input type="password" class="form-control" id="senha" name="senha" required pattern="[A-Za-z0-9\-]{8,30}">
                                 <small>Somente caracteres e números, sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
