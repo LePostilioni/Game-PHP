@@ -178,7 +178,7 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
                 <div class="message">
                     <?php echo $message; ?>
                 </div>
-
+                <!-- Formularios de login e cadastro -->
                 <?php if (!$logado) : ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="login-form">
                       <h3 id="login-heading">Login</h3>
@@ -222,7 +222,6 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
                             <button type="submit" class="btn btn-outline-dark botao_menor" name="cadastro" onclick="addShakeEffect(this)">Cadastrar</button>
                             <button type="button" class="btn btn-outline-dark botao_menor" onclick="showLoginForm()">Fazer Login</button>
                         </form>
-
                     <script>
                         function showCadastroForm() {
                           document.getElementById('login-form').style.display = 'none';
@@ -234,8 +233,54 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
                           document.getElementById('cadastro-form').style.display = 'none';
                         }
                     </script>
-                <?php endif; ?>
 
+                <?php else: ?>
+                <!-- Formularios depois de logado -->
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="bemvindo" style="display: block;">
+                    <h3>Bem-vindo, <?php echo $_SESSION['nome']; ?>!</h3>
+                    <a class="btn btn-outline-dark botao_menor" href="game.php">Jogar</a>
+                    <br><br>
+                    <button type="button" class="btn btn-outline-dark botao_menor" onclick="showChangePasswordForm()">Mudar Senha</button>
+                    <br><br>
+                    <hr>
+                    <button type="button" class="btn btn-outline-dark botao_maior" onclick="showBemvindo()">Sair</button>
+                    </form>
+
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="change-password-form" style="display: none;">
+                        <h3>Mudar Senha</h3>
+                        <div class="form-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <label for="senha-atual">Senha Atual:</label>
+                            <input type="password" class="form-control" id="senha-atual" name="senha-atual" required>
+                        </div>
+                        <div class="form-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <label for="nova-senha">Nova Senha:</label>
+                            <input type="password" class="form-control" id="nova-senha" name="nova-senha" required pattern="[A-Za-z0-9\-]{8,30}">
+                            <small>Somente caracteres e números, sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
+                        </div>
+                        <hr>
+                        <button type="submit" class="btn btn-outline-dark botao_menor" name="mudar-senha" onclick="addShakeEffect(this)">Salvar</button>
+                        <button type="button" class="btn btn-outline-dark botao_menor" onclick="cancelChangePassword()">Cancelar</button>
+                    </form>
+
+                <script>
+                        function showBemvindo() {
+                          document.getElementById('change-password-form').style.display = 'none';
+                          document.getElementById('login-form').style.display = 'none';
+                        }
+
+                        function showChangePasswordForm() {
+                          document.getElementById('bemvindo').style.display = 'none';
+                          document.getElementById('change-password-form').style.display = 'block';
+                        }
+
+                        function cancelChangePassword() {
+                          document.getElementById('bemvindo').style.display = 'block';
+                          document.getElementById('change-password-form').style.display = 'none';
+                        }
+                    </script>
+                    <?php endif; ?>
             </div>
         </div>
     </div>
@@ -252,6 +297,16 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
     </footer>
     <!-- Script do dark theme do bootstrap -->
     <script>
+        // Função para adicionar efeito de shake em um botão
+        function addShakeEffect(button) {
+            button.classList.add('btn-shake');
+            setTimeout(function () {
+                button.classList.remove('btn-shake');
+            }, 500);
+        }
+    </script>
+    <script>
+    // Função para mudar o tema da página
       function myFunction() {
         var element = document.body;
         element.dataset.bsTheme =
