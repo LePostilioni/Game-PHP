@@ -76,10 +76,6 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
     <!-- Para usar os icones do Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        .container {
-            margin-top: 1px;
-        }
-
         h1,
         h3 {
             color: #f58220;
@@ -88,10 +84,6 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
         .message {
             text-align: center;
             margin-bottom: 20px;
-        }
-
-        .form-group small {
-            color: #fff;
         }
 
         .btn-shake {
@@ -120,22 +112,28 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
             }
         }
 
-        footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
+        .form-group small {
+            font-size: 12px;
         }
 
-        footer div {
+        footer {
+            text-align: center;
+        }
+
+        .desenvolvido_por {
+            position: sticky;
             display: inline-block;
             animation: marquee 15s linear infinite;
         }
 
-        button {
-            width: 150px;
+        .botao_menor {
+            width: 200px;
+            background-color: #FFA500;
+        }
+
+        .botao_maior{
+            width: 400px;
+            background-color: #FFA500;
         }
 
         @keyframes marquee {
@@ -157,7 +155,7 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
 
 <body data-bs-theme="dark">
 <!-- Botão de mudar o tema dark ou light -->
-<div class="form-check form-switch mx-4">
+<div class="form-check form-switch mx-1">
     <i class="fa-solid fa-circle-half-stroke"></i>
       <input
         class="form-check-input p-2"
@@ -172,13 +170,13 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
     <div class="container text-center">
         <div class="row">
             <div class="col-md-6 offset-md-3">
-                <h1>Bem-vindo ao Meu Projeto</h1>
-                <p>Divirta-se com nosso incrível game!</p>
+                <br><br>
+                <h1>Bem-vindo ao Projeto</h1>
+                <p>Divirta-se com nosso game!</p>
                 <hr>
 
                 <div class="message">
                     <?php echo $message; ?>
-                    <?php echo $message2; ?>
                 </div>
 
                 <?php if (!$logado) : ?>
@@ -194,9 +192,11 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
                             <label for="senha-login">Senha:</label>
                             <input type="password" class="form-control" id="senha-login" name="senha-login" required>
                         </div>
+                        <br>
+                        <button type="submit" class="btn btn-outline-dark botao_menor" name="login" onclick="addShakeEffect(this)">Entrar</button>
+                        <button type="button" class="btn btn-outline-warning botao_menor" disabled onclick="showEsqueciForm()">Esqueci a senha</button> <!-- Ainda não implementado -->
                         <hr>
-                        <button type="submit" class="btn btn-primary" name="login" onclick="addShakeEffect(this)">Entrar</button>
-                        <button type="button" class="btn btn-primary" onclick="showCadastroForm()">Cadastrar-se</button>
+                        <button type="button" class="btn btn-outline-dark botao_maior" onclick="showCadastroForm()">Cadastrar-se</button>
                     </form>
 
                         <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="cadastro-form" style="display: none;">
@@ -218,8 +218,9 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
                                 <input type="password" class="form-control" id="senha" name="senha" required pattern="[A-Za-z0-9\-]{8,30}">
                                 <small>Somente caracteres e números, sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
                             </div>
-                            <button type="submit" class="btn btn-primary" name="cadastro" onclick="addShakeEffect(this)">Cadastrar</button>
-                            <button type="button" class="btn btn-primary" onclick="showLoginForm()">Fazer Login</button>
+                            <hr>
+                            <button type="submit" class="btn btn-outline-dark botao_menor" name="cadastro" onclick="addShakeEffect(this)">Cadastrar</button>
+                            <button type="button" class="btn btn-outline-dark botao_menor" onclick="showLoginForm()">Fazer Login</button>
                         </form>
 
                     <script>
@@ -238,9 +239,14 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
             </div>
         </div>
     </div>
+    <br>
     <!-- Rodapé da página -->
     <footer>
-        <div>
+    <div class="message">
+            <?php echo $message2; ?>
+        </div>
+        <hr>
+        <div class="desenvolvido_por">
             <?php echo $footerText; ?>
         </div>
     </footer>
