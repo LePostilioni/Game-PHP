@@ -1,4 +1,6 @@
 <?php
+// Rodapé
+$code_version = '1.0.1';
 // Variável para armazenar as mensagens
 $message = '';
 $message2 = '';
@@ -61,20 +63,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
         $logado = true;
         $message = "Login realizado com sucesso!";
 
-    // Recuperar os dados do usuário do banco de dados
-    $row = $result->fetch_assoc();
-    $nome = $row["nome"];
-    $gm_level = $row["gm_level"];
-    $_SESSION["nome"] = $nome;
-    $_SESSION["gm_level"] = $gm_level;
+        // Recuperar os dados do usuário do banco de dados
+        $row = $result->fetch_assoc();
+        $nome = $row["nome"];
+        $gm_level = $row["gm_level"];
+        $_SESSION["nome"] = $nome;
+        $_SESSION["gm_level"] = $gm_level;
 
         $message2 = "<br><span style='font-weight: bold; color: green;'>Você está logado</span>";
     } else {
         $message = "<span style='color: red;'>Email ou senha inválidos. Por favor, tente novamente.</span>";
     }
 }
-// Rodapé
-$footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
 ?>
 
 <!DOCTYPE html>
@@ -150,7 +150,7 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
             border-color: #495057;
         }
 
-        .botao_maior{
+        .botao_maior {
             width: 400px;
             background-color: #f58220;
         }
@@ -177,17 +177,10 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
 </head>
 
 <body data-bs-theme="dark">
-<!-- Botão de mudar o tema dark ou light -->
-<div class="form-check form-switch mx-1">
-    <i class="fa-solid fa-circle-half-stroke"></i>
-      <input
-        class="form-check-input p-2"
-        type="checkbox"
-        role="switch"
-        id="flexSwitchCheckChecked"
-        checked
-        onclick="myFunction()"
-      />
+    <!-- Botão de mudar o tema dark ou light -->
+    <div class="form-check form-switch mx-1">
+        <i class="fa-solid fa-circle-half-stroke"></i>
+        <input class="form-check-input p-2" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked onclick="myFunction()" />
     </div>
     <!-- Conteúdo da página -->
     <div class="container text-center">
@@ -204,7 +197,7 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
                 <!-- Formularios de login e cadastro -->
                 <?php if (!$logado) : ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="login-form">
-                      <h3 id="login-heading">Login</h3>
+                        <h3 id="login-heading">Login</h3>
                         <div class="form-group">
                             <i class="fa-solid fa-envelope"></i>
                             <label for="email-login">Email:</label>
@@ -222,123 +215,123 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
                         <button type="button" class="btn btn-outline-dark botao_maior" onclick="showCadastroForm()">Cadastrar-se</button>
                     </form>
 
-                        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="cadastro-form" style="display: none;">
-                            <h3>Cadastre-se</h3>
-                            <div class="form-group">
-                                <i class="fa-solid fa-user"></i>
-                                <label for="nome">Nome:</label>
-                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Fulano de Tal" required pattern="[A-Za-zÀ-ÿ\s-]{10,30}">
-                                <small>Nome e sobrenome, somente letras. Mínimo de 10 caracteres e máximo de 30.</small>
-                            </div>
-                            <div class="form-group">
-                                <i class="fa-solid fa-envelope"></i>
-                                <label for="email">Email:</label>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="fulano@exemplo.com" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
-                            </div>
-                            <div class="form-group">
-                                <i class="fa-solid fa-lock"></i>
-                                <label for="senha">Senha:</label>
-                                <input type="password" class="form-control" id="senha" name="senha" placeholder="Ex:Abcd123*&" required pattern="[A-Za-z0-9\-]{8,30}">
-                                <small>Somente caracteres e números, sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
-                            </div>
-                            <hr>
-                            <button type="submit" class="btn btn-outline-dark botao_menor" name="cadastro" onclick="addShakeEffect(this)">Cadastrar</button>
-                            <button type="button" class="btn btn-outline-dark botao_menor" onclick="showLoginForm()">Fazer Login</button>
-                        </form>
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="cadastro-form" style="display: none;">
+                        <h3>Cadastre-se</h3>
+                        <div class="form-group">
+                            <i class="fa-solid fa-user"></i>
+                            <label for="nome">Nome:</label>
+                            <input type="text" class="form-control" id="nome" name="nome" placeholder="Fulano de Tal" required pattern="[A-Za-zÀ-ÿ\s-]{10,30}">
+                            <small>Nome e sobrenome, somente letras. Mínimo de 10 caracteres e máximo de 30.</small>
+                        </div>
+                        <div class="form-group">
+                            <i class="fa-solid fa-envelope"></i>
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="fulano@exemplo.com" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                        </div>
+                        <div class="form-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <label for="senha">Senha:</label>
+                            <input type="password" class="form-control" id="senha" name="senha" placeholder="Ex:Abcd123*&" required pattern="[A-Za-z0-9\-]{8,30}">
+                            <small>Somente caracteres e números, sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
+                        </div>
+                        <hr>
+                        <button type="submit" class="btn btn-outline-dark botao_menor" name="cadastro" onclick="addShakeEffect(this)">Cadastrar</button>
+                        <button type="button" class="btn btn-outline-dark botao_menor" onclick="showLoginForm()">Fazer Login</button>
+                    </form>
                     <script>
                         function showCadastroForm() {
-                          document.getElementById('login-form').style.display = 'none';
-                          document.getElementById('cadastro-form').style.display = 'block';
+                            document.getElementById('login-form').style.display = 'none';
+                            document.getElementById('cadastro-form').style.display = 'block';
                         }
 
                         function showLoginForm() {
-                          document.getElementById('login-form').style.display = 'block';
-                          document.getElementById('cadastro-form').style.display = 'none';
+                            document.getElementById('login-form').style.display = 'block';
+                            document.getElementById('cadastro-form').style.display = 'none';
                         }
                     </script>
 
-<?php else: ?>
-    <!-- Formulários depois de logado -->
-    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="bemvindo" style="display: block;">
-        <h3>Seja muito bem-vindo(a), <?php echo $_SESSION['nome']; ?>!</h3>
-        <br>
-        <a class="btn btn-outline-dark botao_menor" href="game.php">Jogar</a>
-        <br><br>
-        <?php if ($_SESSION['gm_level'] > 0): ?>
-        <a class="btn btn-outline-dark botao_menor" href="adm.php">Administração</a>
-        <br><br>
-        <?php endif; ?>
-        <button type="button" class="btn btn-outline-dark botao_menor" onclick="showChangePasswordForm()">Mudar Senha</button>
-        <br><br>
-        <hr>
-        <button type="button" class="btn btn-outline-dark botao_maior" onclick="showBemvindo()">Sair</button>
-    </form>
+                <?php else : ?>
+                    <!-- Formulários depois de logado -->
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="bemvindo" style="display: block;">
+                        <h3>Seja muito bem-vindo(a), <?php echo $_SESSION['nome']; ?>!</h3>
+                        <br>
+                        <a class="btn btn-outline-dark botao_menor" href="game.php">Jogar</a>
+                        <br><br>
+                        <?php if ($_SESSION['gm_level'] > 0) : ?>
+                            <a class="btn btn-outline-dark botao_menor" href="adm.php">Administração</a>
+                            <br><br>
+                        <?php endif; ?>
+                        <button type="button" class="btn btn-outline-dark botao_menor" onclick="showChangePasswordForm()">Mudar Senha</button>
+                        <br><br>
+                        <hr>
+                        <button type="button" class="btn btn-outline-dark botao_maior" onclick="showBemvindo()">Sair</button>
+                    </form>
 
-    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="change-password-form" style="display: none;">
-        <h3>Mudar Senha</h3>
-        <div class="form-group">
-            <i class="fa-solid fa-lock"></i>
-            <label for="senha-atual">Senha Atual:</label>
-            <input type="password" class="form-control" id="senha-atual" name="senha-atual" required>
-        </div>
-        <div class="form-group">
-            <i class="fa-solid fa-lock"></i>
-            <label for="nova-senha">Nova Senha:</label>
-            <input type="password" class="form-control" id="nova-senha" name="nova-senha" required pattern="[A-Za-z0-9\-]{8,30}">
-            <small>Somente caracteres e números, sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
-        </div>
-        <hr>
-        <button type="submit" class="btn btn-outline-dark botao_menor" name="mudar-senha" onclick="addShakeEffect(this)">Salvar</button>
-        <button type="button" class="btn btn-outline-dark botao_menor" onclick="cancelChangePassword()">Cancelar</button>
-    </form>
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="change-password-form" style="display: none;">
+                        <h3>Mudar Senha</h3>
+                        <div class="form-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <label for="senha-atual">Senha Atual:</label>
+                            <input type="password" class="form-control" id="senha-atual" name="senha-atual" required>
+                        </div>
+                        <div class="form-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <label for="nova-senha">Nova Senha:</label>
+                            <input type="password" class="form-control" id="nova-senha" name="nova-senha" required pattern="[A-Za-z0-9\-]{8,30}">
+                            <small>Somente caracteres e números, sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
+                        </div>
+                        <hr>
+                        <button type="submit" class="btn btn-outline-dark botao_menor" name="mudar-senha" onclick="addShakeEffect(this)">Salvar</button>
+                        <button type="button" class="btn btn-outline-dark botao_menor" onclick="cancelChangePassword()">Cancelar</button>
+                    </form>
 
-    <script>
-        function showBemvindo() {
-            document.getElementById('change-password-form').style.display = 'none';
-            document.getElementById('login-form').style.display = 'none';
-        }
+                    <script>
+                        function showBemvindo() {
+                            document.getElementById('change-password-form').style.display = 'none';
+                            document.getElementById('login-form').style.display = 'none';
+                        }
 
-        function showChangePasswordForm() {
-            document.getElementById('bemvindo').style.display = 'none';
-            document.getElementById('change-password-form').style.display = 'block';
-        }
+                        function showChangePasswordForm() {
+                            document.getElementById('bemvindo').style.display = 'none';
+                            document.getElementById('change-password-form').style.display = 'block';
+                        }
 
-        function cancelChangePassword() {
-            document.getElementById('bemvindo').style.display = 'block';
-            document.getElementById('change-password-form').style.display = 'none';
-        }
-    </script>
-<?php endif; ?>
+                        function cancelChangePassword() {
+                            document.getElementById('bemvindo').style.display = 'block';
+                            document.getElementById('change-password-form').style.display = 'none';
+                        }
+                    </script>
+                <?php endif; ?>
             </div>
         </div>
     </div>
     <br>
     <!-- Rodapé da página -->
     <footer>
-    <div class="message">
+        <div class="message">
             <?php echo $message2; ?>
         </div>
         <hr>
         <div class="desenvolvido_por">
-            <?php echo $footerText; ?>
+            Desenvolvido por Leandro Postilioni Aires - 2023 / Versão: <?php echo $code_version; ?>
         </div>
     </footer>
     <script>
         // Função para adicionar efeito de shake em um botão
         function addShakeEffect(button) {
             button.classList.add('btn-shake');
-            setTimeout(function () {
+            setTimeout(function() {
                 button.classList.remove('btn-shake');
             }, 500);
         }
     </script>
     <!-- Script do dark theme do bootstrap -->
     <script>
-      function myFunction() {
-        var element = document.body;
-        element.dataset.bsTheme =
-          element.dataset.bsTheme == "light" ? "dark" : "light";
-      }
+        function myFunction() {
+            var element = document.body;
+            element.dataset.bsTheme =
+                element.dataset.bsTheme == "light" ? "dark" : "light";
+        }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="css/bootstrap.js"></script>
