@@ -1,13 +1,17 @@
 <?php
-// Rodapé
-$code_version = '1.0.1';
-// Variável para armazenar as mensagens
+// Inicie a sessão
+session_start();
+
+// Versão do código
+$code_version = '1.1.0';
+
+// Variáveis para armazenar as mensagens
 $message = '';
 $message2 = '';
-$logado = false; // Variável para controlar se o usuário está logado
+
+// Variáveis ainda não implementadas
 $logado_sql = false; // Variável para controlar quantos usuários estão logados pelo servidor
 $char_criado = false; // Varável de controle de administrador
-$gm_level = '0'; // Varável de controle de administrador
 
 // Conexão com o banco de dados
 $servername = "localhost";
@@ -15,11 +19,53 @@ $username = "root";
 $password = "leandro27**";
 $dbname = "leandrophpgame";
 
+// Verifique se as variaveis de sessão estão definidas
+if (isset($_SESSION["logado"])) {
+    $logado = $_SESSION["logado"];
+} else {
+    $logado = false; // Variável para controlar se o usuário está logado
+}
+if (isset($_SESSION["gm_level"])) {
+    $gm_level = $_SESSION["gm_level"];
+} else {
+    $gm_level = '0'; // Varável de controle de administrador
+}
+if (isset($_SESSION["email"])) {
+    $email = $_SESSION["email"];
+} else {
+    $email = 'nenhum';
+}
+if (isset($_SESSION["nome"])) {
+    $nome = $_SESSION["nome"];
+} else {
+    $nome = 'nenhum';
+}
+if (isset($_SESSION["senha"])) {
+    $senha = $_SESSION["senha"];
+} else {
+    $senha = 'nenhum';
+}
+if (isset($_SESSION["senha_atual"])) {
+    $senha_atual = $_SESSION["senha_atual"];
+} else {
+    $senha_atual = 'nenhum';
+}
+if (isset($_SESSION["nova_senha"])) {
+    $nova_senha = $_SESSION["nova_senha"];
+} else {
+    $nova_senha = 'nenhum';
+}
+if (isset($_SESSION["confirmar_senha"])) {
+    $confirmar_senha = $_SESSION["confirmar_senha"];
+} else {
+    $confirmar_senha = 'nenhum';
+}
+
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Erro na conexão com o banco de dados: " . $conn->connect_error);
 } else {
-    if ($logado == false) {
+    if (!$logado) {
         $message2 = "<br>Servidor <span style='font-weight: bold; color: green;'>Online</span> - Você não está logado";
     } else {
         $message2 = "<br>Servidor <span style='font-weight: bold; color: green;'>Online</span> - Você está logado";
@@ -28,27 +74,49 @@ if ($conn->connect_error) {
 
 // Processar o formulário de cadastro
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["cadastro"])) {
-    $nome = $_POST["nome"];
-    $email = $_POST["email"];
-    $senha = $_POST["senha"];
+    if (isset($_POST['nome'])) {
+        $nome = $_POST['nome'];
+    } else {
+        $nome = "";
+    }
+
+    if (isset($_POST['email'])) {
+        $email = $_POST['email'];
+    } else {
+        $email = "";
+    }
+
+    if (isset($_POST['senha'])) {
+        $senha = $_POST['senha'];
+    } else {
+        $senha = "";
+    }
 
     // Formatar o nome do usuário
     $nome = ucwords(strtolower($nome));
 
     // Verificar se o email já está cadastrado
-    $sql = "SELECT * FROM usuarios WHERE email = '$email'";
-    $result = $conn->query($sql);
+    $query = "SELECT * FROM usuarios WHERE email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
     if ($result->num_rows > 0) {
-        $message = "<span style='color: red;'>Este email já está cadastrado. Por favor, tente novamente.</span>";
+        $message = "<span style='color: #f34336;'>Este email já está cadastrado. Por favor, tente novamente.</span>";
     } else {
         // Inserir os dados do usuário no banco de dados
-        $sql = "INSERT INTO usuarios (nome, email, senha, gm_level, criado_em) VALUES ('$nome', '$email', '$senha', 0, CURRENT_TIMESTAMP)";
-        if ($conn->query($sql) === TRUE) {
+        $query = "INSERT INTO usuarios (nome, email, senha, gm_level, criado_em) VALUES (?, ?, ?, 0, CURRENT_TIMESTAMP)";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("sss", $nome, $email, $senha);
+
+        if ($stmt->execute()) {
             $message = "Cadastro realizado com sucesso!";
         } else {
-            $message = "Erro no cadastro: " . $conn->error;
+            $message = "Erro no cadastro: " . $stmt->error;
         }
     }
+    $stmt->close();
 }
 
 // Processar o formulário de login
@@ -57,25 +125,113 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
     $senha = $_POST["senha-login"];
 
     // Verificar as credenciais do usuário
-    $sql = "SELECT * FROM usuarios WHERE email = '$email' AND senha = '$senha'";
-    $result = $conn->query($sql);
+    $query = "SELECT * FROM usuarios WHERE email = ? AND senha = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ss", $email, $senha);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
     if ($result->num_rows > 0) {
         $logado = true;
+        $_SESSION["logado"] = $logado;
         $message = "Login realizado com sucesso!";
 
         // Recuperar os dados do usuário do banco de dados
         $row = $result->fetch_assoc();
         $nome = $row["nome"];
         $gm_level = $row["gm_level"];
+        $senha = $row["senha"];
+        $email = $row["email"];
         $_SESSION["nome"] = $nome;
         $_SESSION["gm_level"] = $gm_level;
+        $_SESSION["senha"] = $senha;
+        $_SESSION["email"] = $email;
 
         $message2 = "<br><span style='font-weight: bold; color: green;'>Você está logado</span>";
     } else {
-        $message = "<span style='color: red;'>Email ou senha inválidos. Por favor, tente novamente.</span>";
+        $message = "<span style='color: #f34336;'>Email ou senha inválidos. Por favor, tente novamente.</span>";
     }
+    $stmt->close();
 }
+
+// Verifica se o "sair" foi enviado
+if (isset($_POST['sair'])) {
+    // Limpar os dados da sessão
+    $_SESSION = array();
+    session_destroy();
+
+    // Redireciona para a página de login
+    header("Location: index.php");
+    exit;
+}
+
+// Verificar se o formulário de mudança de senha foi enviado
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['mudar-senha'])) {
+    if (isset($_POST['senha-atual'])) {
+        $senha_atual = $_POST['senha-atual'];
+    } else {
+        $senha_atual = "";
+    }
+
+    if (isset($_POST['nova-senha'])) {
+        $nova_senha = $_POST['nova-senha'];
+    } else {
+        $nova_senha = "";
+    }
+
+    if (isset($_POST['confirmar-senha'])) {
+        $confirmar_senha = $_POST['confirmar-senha'];
+    } else {
+        $confirmar_senha = "";
+    }
+
+    // Verificar se a senha atual está correta
+    $query = "SELECT senha FROM usuarios WHERE email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows === 1) {
+        $stmt->bind_result($senha_banco);
+        $stmt->fetch();
+
+        // Verificar se a senha atual está correta
+        if ($senha_atual === $senha_banco) {
+            // A senha atual está correta, você pode prosseguir com a atualização da senha
+            // Verificar se a nova senha e a confirmação da nova senha coincidem
+            if ($nova_senha === $confirmar_senha) {
+                // Preparar a consulta para atualizar a senha no banco de dados
+                $query_atualizar = "UPDATE usuarios SET senha = ? WHERE email = ?";
+                $stmt_atualizar = $conn->prepare($query_atualizar);
+                $stmt_atualizar->bind_param("ss", $nova_senha, $email);
+
+                // Executar a atualização
+                if ($stmt_atualizar->execute()) {
+                    $message = "Senha alterada com sucesso!";
+                } else {
+                    $message = "<span style='color: #f34336;'>Ocorreu um erro ao atualizar a senha. Tente novamente.</span>";
+                }
+
+                // Fechar a declaração de atualização
+                $stmt_atualizar->close();
+            } else {
+                // Exibir mensagem de erro caso as senhas não coincidam
+                $message = "<span style='color: #f34336;'>As senhas não coincidem. Tente novamente.</span>";
+            }
+        } else {
+            $message = "<span style='color: #f34336;'>A senha atual está incorreta. Tente novamente.</span>";
+        }
+    } else {
+        // Usuário não encontrado ou múltiplos registros encontrados (algo está errado)
+        $message = "<span style='color: #f34336;'>O usuário não foi encontrado ou houve um erro no banco de dados.</span>";
+    }
+    $stmt->close();
+}
+
+$conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -172,15 +328,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
                 transform: translateX(100%);
             }
         }
+
+        .informacoesdev {
+            font-size: 12px;
+            color: greenyellow;
+            background-color: #303030;
+        }
     </style>
     <title>Página Inicial</title>
 </head>
 
 <body data-bs-theme="dark">
+    <!-- Se for administrador vai aparecer informações em cima -->
+    <?php if ($gm_level > 0) : ?>
+        <div class="informacoesdev"> Informações ao Desenvolvedor:<br>Logado: <?php echo (!$logado) ? "Não" : "Sim"; ?> / ADM: <?php echo (!$gm_level > 0) ? "Não" : "Sim"; ?> / Nome: <?php echo $nome; ?> / E-mail: <?php echo $email; ?> / Senha: <?php echo $senha; ?>
+            <br>Senha atual: <?php echo $senha_atual; ?> / Nova senha: <?php echo $nova_senha; ?> / Confirma senha: <?php echo $confirmar_senha; ?>
+        </div>
+    <?php endif; ?>
     <!-- Botão de mudar o tema dark ou light -->
     <div class="form-check form-switch mx-1">
         <i class="fa-solid fa-circle-half-stroke"></i>
-        <input class="form-check-input p-2" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked onclick="myFunction()" />
+        <input class="form-check-input p-2" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked onclick="Temabootstrap()" />
     </div>
     <!-- Conteúdo da página -->
     <div class="container text-center">
@@ -231,8 +399,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
                         <div class="form-group">
                             <i class="fa-solid fa-lock"></i>
                             <label for="senha">Senha:</label>
-                            <input type="password" class="form-control" id="senha" name="senha" placeholder="Ex:Abcd123*&" required pattern="[A-Za-z0-9\-]{8,30}">
-                            <small>Somente caracteres e números, sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
+                            <input type="password" class="form-control" id="senha" name="senha" placeholder="Ex:Abcd123*&" required pattern="[A-Za-zÀ-ÿ0-9\-]{8,30}">
+                            <small>Sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
                         </div>
                         <hr>
                         <button type="submit" class="btn btn-outline-dark botao_menor" name="cadastro" onclick="addShakeEffect(this)">Cadastrar</button>
@@ -264,7 +432,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
                         <button type="button" class="btn btn-outline-dark botao_menor" onclick="showChangePasswordForm()">Mudar Senha</button>
                         <br><br>
                         <hr>
-                        <button type="button" class="btn btn-outline-dark botao_maior" onclick="showBemvindo()">Sair</button>
+                        <button type="submit" name="sair" class="btn btn-outline-dark botao_maior">Sair</button>
                     </form>
 
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="change-password-form" style="display: none;">
@@ -277,8 +445,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
                         <div class="form-group">
                             <i class="fa-solid fa-lock"></i>
                             <label for="nova-senha">Nova Senha:</label>
-                            <input type="password" class="form-control" id="nova-senha" name="nova-senha" required pattern="[A-Za-z0-9\-]{8,30}">
-                            <small>Somente caracteres e números, sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
+                            <input type="password" class="form-control" id="nova-senha" name="nova-senha" required pattern="[A-Za-zÀ-ÿ0-9\-]{8,30}">
+                        </div>
+                        <div class="form-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <label for="confirmar-senha">Confirmar Nova Senha:</label>
+                            <input type="password" class="form-control" id="confirmar-senha" name="confirmar-senha" required>
+                            <small>*Sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
                         </div>
                         <hr>
                         <button type="submit" class="btn btn-outline-dark botao_menor" name="mudar-senha" onclick="addShakeEffect(this)">Salvar</button>
@@ -317,17 +490,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
         </div>
     </footer>
     <script>
-        // Função para adicionar efeito de shake em um botão
+        // Função para adicionar efeito de shake nos botões
         function addShakeEffect(button) {
             button.classList.add('btn-shake');
             setTimeout(function() {
                 button.classList.remove('btn-shake');
             }, 500);
         }
-    </script>
-    <!-- Script do dark theme do bootstrap -->
-    <script>
-        function myFunction() {
+
+        // Script do dark theme do bootstrap
+        function Temabootstrap() {
             var element = document.body;
             element.dataset.bsTheme =
                 element.dataset.bsTheme == "light" ? "dark" : "light";
