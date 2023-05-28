@@ -30,6 +30,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["cadastro"])) {
     $email = $_POST["email"];
     $senha = $_POST["senha"];
 
+    // Formatar o nome do usuário
+    $nome = ucwords(strtolower($nome));
+
     // Verificar se o email já está cadastrado
     $sql = "SELECT * FROM usuarios WHERE email = '$email'";
     $result = $conn->query($sql);
@@ -57,6 +60,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
     if ($result->num_rows > 0) {
         $logado = true;
         $message = "Login realizado com sucesso!";
+
+    // Recuperar os dados do usuário do banco de dados
+    $row = $result->fetch_assoc();
+    $nome = $row["nome"];
+    $gm_level = $row["gm_level"];
+    $_SESSION["nome"] = $nome;
+    $_SESSION["gm_level"] = $gm_level;
+
         $message2 = "<br><span style='font-weight: bold; color: green;'>Você está logado</span>";
     } else {
         $message = "<span style='color: red;'>Email ou senha inválidos. Por favor, tente novamente.</span>";
@@ -126,14 +137,26 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
             animation: marquee 15s linear infinite;
         }
 
+        .desenvolvido_por:hover {
+            animation-play-state: paused;
+        }
+
         .botao_menor {
             width: 200px;
-            background-color: #FFA500;
+            background-color: #f58220;
+        }
+
+        .botao_menor:hover {
+            border-color: #495057;
         }
 
         .botao_maior{
             width: 400px;
-            background-color: #FFA500;
+            background-color: #f58220;
+        }
+
+        .botao_maior:hover {
+            border-color: #495057;
         }
 
         @keyframes marquee {
@@ -171,7 +194,7 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
         <div class="row">
             <div class="col-md-6 offset-md-3">
                 <br><br>
-                <h1>Bem-vindo ao Projeto</h1>
+                <h1>Bem-vindo(a) ao Projeto</h1>
                 <p>Divirta-se com nosso game!</p>
                 <hr>
 
@@ -204,18 +227,18 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
                             <div class="form-group">
                                 <i class="fa-solid fa-user"></i>
                                 <label for="nome">Nome:</label>
-                                <input type="text" class="form-control" id="nome" name="nome" required pattern="[A-Za-z\s-]{10,30}">
+                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Fulano de Tal" required pattern="[A-Za-zÀ-ÿ\s-]{10,30}">
                                 <small>Nome e sobrenome, somente letras. Mínimo de 10 caracteres e máximo de 30.</small>
                             </div>
                             <div class="form-group">
                                 <i class="fa-solid fa-envelope"></i>
                                 <label for="email">Email:</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="fulano@exemplo.com" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
                             </div>
                             <div class="form-group">
                                 <i class="fa-solid fa-lock"></i>
                                 <label for="senha">Senha:</label>
-                                <input type="password" class="form-control" id="senha" name="senha" required pattern="[A-Za-z0-9\-]{8,30}">
+                                <input type="password" class="form-control" id="senha" name="senha" placeholder="Ex:Abcd123*&" required pattern="[A-Za-z0-9\-]{8,30}">
                                 <small>Somente caracteres e números, sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
                             </div>
                             <hr>
@@ -234,53 +257,58 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
                         }
                     </script>
 
-                <?php else: ?>
-                <!-- Formularios depois de logado -->
-                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="bemvindo" style="display: block;">
-                    <h3>Bem-vindo, <?php echo $_SESSION['nome']; ?>!</h3>
-                    <a class="btn btn-outline-dark botao_menor" href="game.php">Jogar</a>
-                    <br><br>
-                    <button type="button" class="btn btn-outline-dark botao_menor" onclick="showChangePasswordForm()">Mudar Senha</button>
-                    <br><br>
-                    <hr>
-                    <button type="button" class="btn btn-outline-dark botao_maior" onclick="showBemvindo()">Sair</button>
-                    </form>
+<?php else: ?>
+    <!-- Formulários depois de logado -->
+    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="bemvindo" style="display: block;">
+        <h3>Seja muito bem-vindo(a), <?php echo $_SESSION['nome']; ?>!</h3>
+        <br>
+        <a class="btn btn-outline-dark botao_menor" href="game.php">Jogar</a>
+        <br><br>
+        <?php if ($_SESSION['gm_level'] > 0): ?>
+        <a class="btn btn-outline-dark botao_menor" href="adm.php">Administração</a>
+        <br><br>
+        <?php endif; ?>
+        <button type="button" class="btn btn-outline-dark botao_menor" onclick="showChangePasswordForm()">Mudar Senha</button>
+        <br><br>
+        <hr>
+        <button type="button" class="btn btn-outline-dark botao_maior" onclick="showBemvindo()">Sair</button>
+    </form>
 
-                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="change-password-form" style="display: none;">
-                        <h3>Mudar Senha</h3>
-                        <div class="form-group">
-                            <i class="fa-solid fa-lock"></i>
-                            <label for="senha-atual">Senha Atual:</label>
-                            <input type="password" class="form-control" id="senha-atual" name="senha-atual" required>
-                        </div>
-                        <div class="form-group">
-                            <i class="fa-solid fa-lock"></i>
-                            <label for="nova-senha">Nova Senha:</label>
-                            <input type="password" class="form-control" id="nova-senha" name="nova-senha" required pattern="[A-Za-z0-9\-]{8,30}">
-                            <small>Somente caracteres e números, sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
-                        </div>
-                        <hr>
-                        <button type="submit" class="btn btn-outline-dark botao_menor" name="mudar-senha" onclick="addShakeEffect(this)">Salvar</button>
-                        <button type="button" class="btn btn-outline-dark botao_menor" onclick="cancelChangePassword()">Cancelar</button>
-                    </form>
+    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="change-password-form" style="display: none;">
+        <h3>Mudar Senha</h3>
+        <div class="form-group">
+            <i class="fa-solid fa-lock"></i>
+            <label for="senha-atual">Senha Atual:</label>
+            <input type="password" class="form-control" id="senha-atual" name="senha-atual" required>
+        </div>
+        <div class="form-group">
+            <i class="fa-solid fa-lock"></i>
+            <label for="nova-senha">Nova Senha:</label>
+            <input type="password" class="form-control" id="nova-senha" name="nova-senha" required pattern="[A-Za-z0-9\-]{8,30}">
+            <small>Somente caracteres e números, sem espaços. Mínimo de 8 caracteres e máximo de 30.</small>
+        </div>
+        <hr>
+        <button type="submit" class="btn btn-outline-dark botao_menor" name="mudar-senha" onclick="addShakeEffect(this)">Salvar</button>
+        <button type="button" class="btn btn-outline-dark botao_menor" onclick="cancelChangePassword()">Cancelar</button>
+    </form>
 
-                <script>
-                        function showBemvindo() {
-                          document.getElementById('change-password-form').style.display = 'none';
-                          document.getElementById('login-form').style.display = 'none';
-                        }
+    <script>
+        function showBemvindo() {
+            document.getElementById('change-password-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'none';
+        }
 
-                        function showChangePasswordForm() {
-                          document.getElementById('bemvindo').style.display = 'none';
-                          document.getElementById('change-password-form').style.display = 'block';
-                        }
+        function showChangePasswordForm() {
+            document.getElementById('bemvindo').style.display = 'none';
+            document.getElementById('change-password-form').style.display = 'block';
+        }
 
-                        function cancelChangePassword() {
-                          document.getElementById('bemvindo').style.display = 'block';
-                          document.getElementById('change-password-form').style.display = 'none';
-                        }
-                    </script>
-                    <?php endif; ?>
+        function cancelChangePassword() {
+            document.getElementById('bemvindo').style.display = 'block';
+            document.getElementById('change-password-form').style.display = 'none';
+        }
+    </script>
+<?php endif; ?>
             </div>
         </div>
     </div>
@@ -295,7 +323,6 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
             <?php echo $footerText; ?>
         </div>
     </footer>
-    <!-- Script do dark theme do bootstrap -->
     <script>
         // Função para adicionar efeito de shake em um botão
         function addShakeEffect(button) {
@@ -305,8 +332,8 @@ $footerText = "Desenvolvido por Leandro Postilioni Aires - 2023";
             }, 500);
         }
     </script>
+    <!-- Script do dark theme do bootstrap -->
     <script>
-    // Função para mudar o tema da página
       function myFunction() {
         var element = document.body;
         element.dataset.bsTheme =
