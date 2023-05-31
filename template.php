@@ -3,7 +3,7 @@
 session_start();
 
 // Versão do código
-$code_version = '1.1.2';
+$code_version = '1.2.0';
 
 // Variáveis para armazenar as mensagens
 $message = '';
@@ -149,7 +149,7 @@ if (isset($_POST['sair'])) {
             left: 0;
             bottom: 0;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.025);
+            background-color: rgba(0, 0, 0, 0.1);
         }
 
         .desenvolvido_por {
