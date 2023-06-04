@@ -235,9 +235,6 @@ $conn->close();
                             <br><br>
                         <?php endif; ?>
                         <button type="button" class="btn btn-outline-dark botao_menor" onclick="showChangePasswordForm()">Mudar Senha</button>
-                        <br><br>
-                        <hr>
-                        <button type="submit" name="sair" class="btn btn-outline-dark botao_maior">Sair</button>
                     </form>
 
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="change-password-form" style="display: none;">

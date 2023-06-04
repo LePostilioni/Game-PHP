@@ -3,7 +3,7 @@
 session_start();
 
 // Versão do código
-$code_version = '1.2.0';
+$code_version = '1.2.1';
 
 // Variáveis para armazenar as mensagens
 $message = '';
@@ -218,6 +218,13 @@ if (isset($_POST['sair'])) {
 
     <!-- Rodapé da página -->
     <footer>
+        <!-- Botão sair depois de logado -->
+        <?php if ($logado) : ?>
+        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="Sair" style="display: block;">
+            <button type="submit" name="sair" class="btn btn-outline-dark botao_maior">Sair</button>
+        </form>
+        <?php endif; ?>
+
         <div class="message2">
             <?php echo $message2; ?>
         </div>
