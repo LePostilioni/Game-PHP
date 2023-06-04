@@ -31,7 +31,8 @@ $dadolancado = "0";
                         <br>
                         <h1 class="font-weight-bold text-danger">Você não tem personagem para jogar!</h1>
                         <hr>
-                        <a class="btn btn-outline-dark botao_maior" href="index.php">Criar agora!</a>
+                        <a class="btn btn-outline-dark botao_menor" href="index.php">Criar agora!</a>
+                        <a class="btn btn-outline-dark botao_menor" href="index.php">Voltar</a>
                         <br><br><br><br>
                     </div>
                 </div>

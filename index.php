@@ -71,17 +71,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
         $gm_level = $row["gm_level"];
         $senha = $row["senha"];
         $email = $row["email"];
+        $ultimo_login = $row["ultimo_login"];
         $_SESSION["nome"] = $nome;
         $_SESSION["gm_level"] = $gm_level;
         $_SESSION["senha"] = $senha;
         $_SESSION["email"] = $email;
+        $_SESSION["ultimo_login"] = date("d/m/Y - H:i:s", strtotime($ultimo_login)); // Formata a data no formato brasileiro
 
         $message2 = "<br><span style='font-weight: bold; color: green;'>Você está logado</span>";
+
+        // Atualizar as colunas logado_sql e ultimo_login
+        $id_usuario = $row["id"];
+        $_SESSION["id_usuario"] = $id_usuario;
+        $atualizarLoginSql = "UPDATE usuarios SET logado_sql = 1 WHERE id = $id_usuario";
+        $conn->query($atualizarLoginSql);
+
+        $atualizarUltimoLoginSql = "UPDATE usuarios SET ultimo_login = NOW() WHERE id = $id_usuario";
+        $conn->query($atualizarUltimoLoginSql);
+
+        // Redirecionar para a página atual
+        echo '<script>window.location.href = window.location.href;</script>';
+        exit();
     } else {
         $message = "<span style='color: #f34336;'>Email ou senha inválidos. Por favor, tente novamente.</span>";
     }
     $stmt->close();
 }
+
 
 // Verificar se o formulário de mudança de senha foi enviado
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['mudar-senha'])) {

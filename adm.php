@@ -1,8 +1,11 @@
 <?php
 include_once 'template.php';
 
-// Obter o número de usuários logados
-$NumeroUsuariosLogados = count($_SESSION);
+// Consulta SQL para contar os usuários logados
+$sql = "SELECT COUNT(*) as total FROM usuarios WHERE logado_sql = 1";
+$result = $conn->query($sql);
+$row = $result->fetch_assoc();
+$numero_usuarios_logados = $row['total'];
 ?>
 
 <head>
@@ -32,10 +35,12 @@ $NumeroUsuariosLogados = count($_SESSION);
                     <h1>Página de Administração</h1>
                     <h3>Seja muito bem-vindo(a) administrador, <?php echo $nome; ?>!</h3>
                     <h4>Seu Nível de Acesso: <?php echo $gm_level; ?> / 9</h4>
-                    <h4>Usuarios Logados: <?php echo $NumeroUsuariosLogados; ?></h4>
-                    <br><hr>
+                    <h4>Usuários logados no momento: <?php echo $numero_usuarios_logados; ?></h4>
+                    <h4>Seu último login: <?php echo $_SESSION["ultimo_login"]; ?></h4>
+                    <hr>
                     <div class="text-center">
-                        <a href="index.php" class="btn btn-outline-dark botao_maior">Voltar</a>
+                        <a class="btn btn-outline-dark botao_menor" href="game.php">Jogar</a>
+                        <a class="btn btn-outline-dark botao_menor" href="index.php" >Voltar</a>
                     </div>
                 </div>
             </div>

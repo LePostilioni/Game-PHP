@@ -3,14 +3,13 @@
 session_start();
 
 // Versão do código
-$code_version = '1.2.1';
+$code_version = '1.2.2';
 
 // Variáveis para armazenar as mensagens
 $message = '';
 $message2 = '';
 
 // Variáveis ainda não implementadas
-$logado_sql = false; // Variável para controlar quantos usuários estão logados pelo servidor
 $char_criado = false; // Varável de controle de administrador
 
 // Conexão com o banco de dados
@@ -60,15 +59,25 @@ if (isset($_SESSION["confirmar_senha"])) {
 } else {
     $confirmar_senha = 'nenhum';
 }
+if (isset($_SESSION["id_usuario"])) {
+    $id_usuario = $_SESSION["id_usuario"];
+} else {
+    $id_usuario = 'nenhum';
+}
+if (isset($_SESSION["ultimo_login"])) {
+    $ultimo_login = $_SESSION["ultimo_login"];
+} else {
+    $ultimo_login = 'nenhum';
+}
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Erro na conexão com o banco de dados: " . $conn->connect_error);
 } else {
     if (!$logado) {
-        $message2 = "<br>Servidor <span style='font-weight: bold; color: green;'>Online</span> - Você não está logado";
+        $message2 = "<br>Você não está logado - Servidor <span style='font-weight: bold; color: green;'>Online</span>";
     } else {
-        $message2 = "<br>Servidor <span style='font-weight: bold; color: green;'>Online</span> - Você está logado";
+        $message2 = "<br>Você está logado - Servidor <span style='font-weight: bold; color: green;'>Online</span>";
     }
 }
 
@@ -77,6 +86,13 @@ if (isset($_POST['sair'])) {
     // Limpar os dados da sessão
     $_SESSION = array();
     session_destroy();
+
+    // Atualizar o status de login no banco de dados
+    $query = "UPDATE usuarios SET logado_sql = 0 WHERE email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->close();
 
     // Redireciona para a página de login
     header("Location: index.php");
@@ -206,7 +222,7 @@ if (isset($_POST['sair'])) {
 <body data-bs-theme="dark">
     <!-- Se for administrador vai aparecer informações em cima -->
     <?php if ($gm_level > 0) : ?>
-        <div class="informacoesdev"> Informações ao Desenvolvedor:<br>Logado: <?php echo (!$logado) ? "Não" : "Sim"; ?> / ADM: <?php echo (!$gm_level > 0) ? "Não" : "Sim"; ?> / Nome: <?php echo $nome; ?> / E-mail: <?php echo $email; ?> / Senha: <?php echo $senha; ?>
+        <div class="informacoesdev"> Informações ao Desenvolvedor:<br>Logado: <?php echo (!$logado) ? "Não" : "Sim"; ?> / ADM: <?php echo (!$gm_level > 0) ? "Não" : "Sim"; ?> / Nome: <?php echo $nome; ?> / E-mail: <?php echo $email; ?> / Senha: <?php echo $senha; ?> / ID: <?php echo $_SESSION["id_usuario"]; ?> / Último login: <?php echo $ultimo_login; ?>
             <br>Senha atual: <?php echo $senha_atual; ?> / Nova senha: <?php echo $nova_senha; ?> / Confirma senha: <?php echo $confirmar_senha; ?>
         </div>
     <?php endif; ?>
@@ -220,17 +236,17 @@ if (isset($_POST['sair'])) {
     <footer>
         <!-- Botão sair depois de logado -->
         <?php if ($logado) : ?>
-        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="Sair" style="display: block;">
-            <button type="submit" name="sair" class="btn btn-outline-dark botao_maior">Sair</button>
-        </form>
+            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="Sair" style="display: block;">
+                <button type="submit" name="sair" class="btn btn-outline-dark botao_maior">Sair</button>
+            </form>
         <?php endif; ?>
 
         <div class="message2">
-            <?php echo $message2; ?>
+            <?php echo $message2; ?> - Versão: <?php echo $code_version; ?>
         </div>
         <hr>
         <div class="desenvolvido_por">
-            Desenvolvido por Leandro Postilioni Aires - 2023 / Versão: <?php echo $code_version; ?>
+            Desenvolvido por Leandro Postilioni Aires - 2023
         </div>
     </footer>
     <script>
