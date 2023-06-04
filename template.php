@@ -1,101 +1,41 @@
 <?php
+// Versão do código
+$code_version = '1.2.4';
+
+// Define o tempo máximo de vida da sessão em segundos (30 minutos)
+session_set_cookie_params(1800); // 1800 segundos = 30 minutos
+
 // Inicie a sessão
 session_start();
 
-// Versão do código
-$code_version = '1.2.2';
+// Regenerar o ID da sessão a cada interação
+session_regenerate_id(true);
+
+$session_timeout = 900; // Tempo limite de inatividade em segundos
 
 // Variáveis para armazenar as mensagens
 $message = '';
 $message2 = '';
 
 // Variáveis ainda não implementadas
-$char_criado = false; // Varável de controle de administrador
+$char_criado = false;
 
 // Conexão com o banco de dados
-$servername = "localhost";
-$username = "root";
-$password = "leandro27**";
-$dbname = "leandrophpgame";
+include('connection.php');
 
-// Verifique se as variaveis de sessão estão definidas
-if (isset($_SESSION["logado"])) {
-    $logado = $_SESSION["logado"];
+// Verifica se o tempo excedeu
+if ($logado && isset($_SESSION['last_activity']) && time() - $_SESSION['last_activity'] > $session_timeout) {
+    // Tempo limite de inatividade excedido, fazer logout ou redirecionar para a página de logout
+    header("Location: logout.php");
+    exit;
 } else {
-    $logado = false; // Variável para controlar se o usuário está logado
-}
-if (isset($_SESSION["gm_level"])) {
-    $gm_level = $_SESSION["gm_level"];
-} else {
-    $gm_level = '0'; // Varável de controle de administrador
-}
-if (isset($_SESSION["email"])) {
-    $email = $_SESSION["email"];
-} else {
-    $email = 'nenhum';
-}
-if (isset($_SESSION["nome"])) {
-    $nome = $_SESSION["nome"];
-} else {
-    $nome = 'nenhum';
-}
-if (isset($_SESSION["senha"])) {
-    $senha = $_SESSION["senha"];
-} else {
-    $senha = 'nenhum';
-}
-if (isset($_SESSION["senha_atual"])) {
-    $senha_atual = $_SESSION["senha_atual"];
-} else {
-    $senha_atual = 'nenhum';
-}
-if (isset($_SESSION["nova_senha"])) {
-    $nova_senha = $_SESSION["nova_senha"];
-} else {
-    $nova_senha = 'nenhum';
-}
-if (isset($_SESSION["confirmar_senha"])) {
-    $confirmar_senha = $_SESSION["confirmar_senha"];
-} else {
-    $confirmar_senha = 'nenhum';
-}
-if (isset($_SESSION["id_usuario"])) {
-    $id_usuario = $_SESSION["id_usuario"];
-} else {
-    $id_usuario = 'nenhum';
-}
-if (isset($_SESSION["ultimo_login"])) {
-    $ultimo_login = $_SESSION["ultimo_login"];
-} else {
-    $ultimo_login = 'nenhum';
-}
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Erro na conexão com o banco de dados: " . $conn->connect_error);
-} else {
-    if (!$logado) {
-        $message2 = "<br>Você não está logado - Servidor <span style='font-weight: bold; color: green;'>Online</span>";
-    } else {
-        $message2 = "<br>Você está logado - Servidor <span style='font-weight: bold; color: green;'>Online</span>";
-    }
+    // Atualize o tempo da última atividade
+    $_SESSION['last_activity'] = time();
 }
 
 // Verifica se o "sair" foi enviado
 if (isset($_POST['sair'])) {
-    // Limpar os dados da sessão
-    $_SESSION = array();
-    session_destroy();
-
-    // Atualizar o status de login no banco de dados
-    $query = "UPDATE usuarios SET logado_sql = 0 WHERE email = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->close();
-
-    // Redireciona para a página de login
-    header("Location: index.php");
+    include('logout.php');
     exit;
 }
 

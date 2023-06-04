@@ -37,10 +37,11 @@ $numero_usuarios_logados = $row['total'];
                     <h4>Seu Nível de Acesso: <?php echo $gm_level; ?> / 9</h4>
                     <h4>Usuários logados no momento: <?php echo $numero_usuarios_logados; ?></h4>
                     <h4>Seu último login: <?php echo $_SESSION["ultimo_login"]; ?></h4>
+                    <h4>Sua última atividade: <?php echo $_SESSION["last_activity"]; ?></h4>
                     <hr>
                     <div class="text-center">
                         <a class="btn btn-outline-dark botao_menor" href="game.php">Jogar</a>
-                        <a class="btn btn-outline-dark botao_menor" href="index.php" >Voltar</a>
+                        <a class="btn btn-outline-dark botao_menor" href="index.php">Voltar</a>
                     </div>
                 </div>
             </div>
