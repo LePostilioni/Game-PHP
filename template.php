@@ -1,6 +1,6 @@
 <?php
 // Versão do código
-$code_version = '1.2.4';
+$code_version = '1.2.6';
 
 // Define o tempo máximo de vida da sessão em segundos (30 minutos)
 session_set_cookie_params(1800); // 1800 segundos = 30 minutos
@@ -14,7 +14,6 @@ session_regenerate_id(true);
 $session_timeout = 900; // Tempo limite de inatividade em segundos
 
 // Variáveis para armazenar as mensagens
-$message = '';
 $message2 = '';
 
 // Variáveis ainda não implementadas
