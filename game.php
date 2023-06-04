@@ -3,6 +3,9 @@ include_once 'template.php';
 // numero do dado lançado
 $dadolancado = "0";
 
+// Variáveis ainda não implementadas
+$char_criado = false;
+
 ?>
 
 <head>

@@ -18,6 +18,10 @@ session_destroy();
 
 
 
-// Redirecionar para a página de login ou qualquer outra página desejada
-header("Location: index.php");
+// Redirecionar para a página de login
+$deslogou = "1";
+$url = "index.php?deslogou=" . urlencode($deslogou);
+header("Location: " . $url);
 exit;
+
+?>

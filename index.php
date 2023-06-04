@@ -33,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["cadastro"])) {
 
     if ($result->num_rows > 0) {
         $message = "<span style='color: #f34336;'>Este email já está cadastrado. Por favor, tente novamente.</span>";
+        $_SESSION["message"] = $message;
     } else {
         // Inserir os dados do usuário no banco de dados
         $query = "INSERT INTO usuarios (nome, email, senha, gm_level, criado_em) VALUES (?, ?, ?, 0, CURRENT_TIMESTAMP)";
@@ -41,8 +42,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["cadastro"])) {
 
         if ($stmt->execute()) {
             $message = "Cadastro realizado com sucesso!";
+            $_SESSION["message"] = $message;
         } else {
             $message = "Erro no cadastro: " . $stmt->error;
+            $_SESSION["message"] = $message;
         }
     }
     $stmt->close();
@@ -64,6 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
         $logado = true;
         $_SESSION["logado"] = $logado;
         $message = "Login realizado com sucesso!";
+        $_SESSION["message"] = $message;
 
         // Recuperar os dados do usuário do banco de dados
         $row = $result->fetch_assoc();
@@ -94,6 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
         exit();
     } else {
         $message = "<span style='color: #f34336;'>Email ou senha inválidos. Por favor, tente novamente.</span>";
+        $_SESSION["message"] = $message;
     }
     $stmt->close();
 }
@@ -143,8 +148,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['mudar-senha'])) {
                 // Executar a atualização
                 if ($stmt_atualizar->execute()) {
                     $message = "Senha alterada com sucesso!";
+                    $_SESSION["message"] = $message;
                 } else {
                     $message = "<span style='color: #f34336;'>Ocorreu um erro ao atualizar a senha. Tente novamente.</span>";
+                    $_SESSION["message"] = $message;
                 }
 
                 // Fechar a declaração de atualização
@@ -152,13 +159,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['mudar-senha'])) {
             } else {
                 // Exibir mensagem de erro caso as senhas não coincidam
                 $message = "<span style='color: #f34336;'>As senhas não coincidem. Tente novamente.</span>";
+                $_SESSION["message"] = $message;
             }
         } else {
             $message = "<span style='color: #f34336;'>A senha atual está incorreta. Tente novamente.</span>";
+            $_SESSION["message"] = $message;
         }
     } else {
         // Usuário não encontrado ou múltiplos registros encontrados (algo está errado)
         $message = "<span style='color: #f34336;'>O usuário não foi encontrado ou houve um erro no banco de dados.</span>";
+        $_SESSION["message"] = $message;
     }
     $stmt->close();
 }

@@ -11,6 +11,17 @@ if (isset($_SESSION["logado"])) {
 } else {
     $logado = false; // Variável para controlar se o usuário está logado
 }
+if (isset($_GET['deslogou']) && $_GET['deslogou'] == 1) {
+    $message = "<span style='color: #f34336;'>Você foi desconectado.</span>";
+    $_SESSION["message"] = $message;
+} else {
+    $deslogou = "0";
+}
+if (isset($_SESSION["message"])) {
+    $message = $_SESSION["message"];
+} else {
+    $message = " ";
+}
 if (isset($_SESSION["gm_level"])) {
     $gm_level = $_SESSION["gm_level"];
 } else {
