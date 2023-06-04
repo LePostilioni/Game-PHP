@@ -1,6 +1,6 @@
 <?php
 // Versão do código
-$code_version = '1.2.7';
+$code_version = '1.3.0';
 
 // Define o tempo máximo de vida da sessão em segundos (30 minutos)
 session_set_cookie_params(1800); // 1800 segundos = 30 minutos
@@ -101,7 +101,7 @@ if (isset($_POST['sair'])) {
             left: 0;
             bottom: 0;
             width: 100%;
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: rgba(30, 30, 30, 0.95);
         }
 
         .desenvolvido_por {
@@ -131,6 +131,11 @@ if (isset($_POST['sair'])) {
 
         .botao_maior:hover {
             border-color: #495057;
+        }
+
+        .laranjinha {
+            color: black;
+            background-color: #F8A762;
         }
 
         @keyframes marquee {
@@ -173,7 +178,7 @@ if (isset($_POST['sair'])) {
         <!-- Botão sair depois de logado -->
         <?php if ($logado) : ?>
             <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="Sair" style="display: block;">
-                <button type="submit" name="sair" class="btn btn-outline-dark botao_maior">Sair</button>
+                <button type="submit" name="sair" class="btn btn-outline-dark botao_maior laranjinha">Sair</button>
             </form>
         <?php endif; ?>
 
