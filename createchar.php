@@ -2,18 +2,37 @@
 include_once 'template.php';
 
 // Função para criar um personagem aleatório
-function criarPersonagemAleatorio($conn, $id) {
-    echo "Função criarPersonagemAleatorio() chamada!";
-    // Defina aqui a lógica para criar um personagem aleatório
-    $nomes = array("Alice", "Bob", "Carol", "Dave", "Eve", "Frank");
-    $nomePersonagem = $nomes[array_rand($nomes)];
+function criarPersonagemAleatorio($conn, $id)
+{
+    // Gerando o sexo aleatório (0 para feminino(40%), 1 para masculino(60%))
+    $sexo = (mt_rand(1, 10) <= 6) ? 1 : 0;
 
-    // Exemplo: Inserindo um personagem aleatório na tabela "personagem"
-    $query = "INSERT INTO personagem (id_usuario, nome, vivo, data_criacao) VALUES (?, ?, ?, ?)";
+    // Selecionar um nome de acordo com o sexo
+    $nome_column = ($sexo === 0) ? 'nomes_femininos' : 'nomes_masculinos';
+    $query = "SELECT $nome_column FROM nomes_sobrenomes ORDER BY RAND() LIMIT 1";
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $stmt->bind_result($nome_personagem);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Selecionar sobrenomes materno e paterno aleatórios
+    $query = "SELECT sobrenomes FROM nomes_sobrenomes ORDER BY RAND() LIMIT 2";
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $stmt->bind_result($sobrenome);
+    $stmt->fetch();
+    $sobrenome_materno = $sobrenome;
+    $stmt->fetch();
+    $sobrenome_paterno = $sobrenome;
+    $stmt->close();
+
+    // Inserindo um personagem aleatório na tabela "personagem"
+    $query = "INSERT INTO personagem (id_usuario, nome_personagem, sobrenome_materno, sobrenome_paterno, sexo, vivo, data_criacao) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
     $vivo = true;
     $dataCriacao = date("Y-m-d H:i:s");
-    $stmt->bind_param("isss", $id, $nomePersonagem, $vivo, $dataCriacao);
+    $stmt->bind_param("issssss", $id, $nome_personagem, $sobrenome_materno, $sobrenome_paterno, $sexo, $vivo, $dataCriacao);
     $stmt->execute();
     $stmt->close();
 
@@ -24,9 +43,10 @@ function criarPersonagemAleatorio($conn, $id) {
     $stmt->execute();
     $stmt->close();
 
-        // Redirecionar para a página atual
-        echo '<script>window.location.href = window.location.href;</script>';
-        exit();
+    $_SESSION["char_criado"] = 1;
+
+    // Redirecionar para a página atual
+    echo '<script>window.location.href = window.location.href;</script>';
 }
 
 // Verificar se o usuário está logado
@@ -54,7 +74,7 @@ if (!isset($_SESSION["logado"])) {
                     <br>
                     <h1 class="font-weight-bold">Vamos criar seu personagem!</h1>
                     <h5>Você foi convocado pela espiritualidade maior para 
-                    encarnar nesse planeta, sua missão principal é ajuda-lo a evoluir!
+                    encarnar nesse planeta, sua missão principal é ajudá-lo a evoluir!
                     <br>Mas lembre-se, esse é um mundo primitivo e muito perigoso. Cada escolha sua terá consequências!</h5>
                     <hr>
                     <h3>Faça sua escolha com sabedoria!<br>Vamos lá:</h3>
@@ -104,21 +124,35 @@ if (!isset($_SESSION["logado"])) {
     }
 } else {
     // Se o usuário já tem personagem criado
+    // Obtém informações do personagem
+    $query = "SELECT nome_personagem, sobrenome_materno, sobrenome_paterno, sexo FROM personagem WHERE id_usuario = ? AND vivo = TRUE";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $_SESSION["id"]);
+    $stmt->execute();
+    $stmt->bind_result($nome_personagem, $sobrenome_materno, $sobrenome_paterno, $sexo);
+    $stmt->fetch();
+    $stmt->close();
+
+    $sexo_texto = ($sexo === 0) ? "uma fêmea" : "um macho";
+    $nome_completo = $nome_personagem . " " . $sobrenome_materno . " " . $sobrenome_paterno;
+    $_SESSION["nome_completo"] = $nome_completo;
+
     echo '
         <div class="container text-center position-absolute top-50 start-50 translate-middle">
             <div class="row">
                 <div class="col-md-6 offset-md-3">
                     <br>
-                    <h1 class="font-weight-bold text-danger">Você já tem um personagem criado!</h1>
+                    <h1 class="font-weight-bold text-danger">Olá ' . $nome_completo . ', você é ' . $sexo_texto . ' da raça Drauxy. Vamos começar sua jornada?</h1>
                     <hr>
-                    <a class="btn btn-outline-dark botao_maior" href="game.php">Voltar</a>
+                    <a class="btn btn-outline-dark botao_maior" href="game.php">Jogar</a>
                 </div>
             </div>
         </div>
     ';
 }
 ?>
-
 </body>
-<br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
 </html>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

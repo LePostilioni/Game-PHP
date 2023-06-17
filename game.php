@@ -43,7 +43,7 @@ $dadolancado = "0";
             <div class="row">
                 <div class="col-md-6 offset-md-3">
                     <h1>Bora jogar!</h1>
-                    <h3>Bem-vindo(a), <?php echo $nome; ?>!</h3>
+                    <h3>Bem-vindo(a), <?php echo $_SESSION["nome_completo"]; ?>!</h3>
                     <div class="text-center">
                         <a href="index.php" class="btn btn-outline-dark botao_maior">Voltar</a>
                     </div>
