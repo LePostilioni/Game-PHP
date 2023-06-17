@@ -76,11 +76,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
         $senha = $row["senha"];
         $email = $row["email"];
         $ultimo_login = $row["ultimo_login"];
+        $char_criado = $row["char_criado"];
+        $energia_universal = $row["energia_universal"];
         $_SESSION["nome"] = $nome;
         $_SESSION["gm_level"] = $gm_level;
         $_SESSION["senha"] = $senha;
         $_SESSION["email"] = $email;
         $_SESSION["ultimo_login"] = date("d/m/Y - H:i:s", strtotime($ultimo_login)); // Formata a data no formato brasileiro
+        $_SESSION["char_criado"] = $char_criado;
+        $_SESSION["energia_universal"] = $energia_universal;
 
         $message2 = "<br><span style='font-weight: bold; color: green;'>Você está logado</span>";
 
@@ -256,11 +260,12 @@ $conn->close();
                         <br>
                         <a class="btn btn-outline-dark botao_menor" href="game.php">Jogar</a>
                         <br><br>
+                        <button type="button" class="btn btn-outline-dark botao_menor laranjinha" onclick="showChangePasswordForm()">Mudar Senha</button>
+                        <br><br>
                         <?php if ($_SESSION['gm_level'] > 0) : ?>
                             <a class="btn btn-outline-dark botao_menor" href="adm.php">Administração</a>
                             <br><br>
                         <?php endif; ?>
-                        <button type="button" class="btn btn-outline-dark botao_menor" onclick="showChangePasswordForm()">Mudar Senha</button>
                     </form>
 
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="change-password-form" style="display: none;">

@@ -9,7 +9,8 @@ CREATE TABLE `usuarios` (
   `gm_level` int(1) NOT NULL DEFAULT 0,
   `logado_sql` tinyint(1) NOT NULL DEFAULT 0,
   `ultimo_login` datetime DEFAULT NULL,
-  `char_criado` tinyint(1) NOT NULL DEFAULT 0
+  `char_criado` tinyint(1) NOT NULL DEFAULT 0,
+  `energia_universal` varchar(7) NOT NULL DEFAULT 50
 );
 
 :::::Alterar o AUTO_INCREMENT de tabela `usuarios`:::::
