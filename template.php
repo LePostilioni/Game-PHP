@@ -1,6 +1,6 @@
 <?php
 // Versão do código
-$code_version = '1.3.5';
+$code_version = '1.3.6';
 
 // Define o tempo máximo de vida da sessão em segundos (30 minutos)
 session_set_cookie_params(1800); // 1800 segundos = 30 minutos
@@ -153,6 +153,7 @@ if (isset($_POST['sair'])) {
         }
 
         .informacoesdev {
+            padding-left: 10px;
             font-size: 12px;
             color: greenyellow;
             background-color: #303030;

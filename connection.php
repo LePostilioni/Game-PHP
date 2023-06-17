@@ -67,6 +67,11 @@ if (isset($_SESSION["ultimo_login"])) {
 } else {
     $ultimo_login = 'nenhum';
 }
+if (isset($_SESSION["nome_personagem"])) {
+    $nome_personagem = $_SESSION["nome_personagem"];
+} else {
+    $nome_personagem = " ";
+}
 
 // Estabelecer a conexão
 $conn = new mysqli($servername, $username, $password, $dbname);

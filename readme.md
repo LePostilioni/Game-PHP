@@ -28,6 +28,7 @@ CREATE TABLE personagem (
   sobrenome_materno VARCHAR(30),
   sobrenome_paterno VARCHAR(30),
   sexo BOOLEAN DEFAULT TRUE,
+  vida_personagem DECIMAL(3,1) NOT NULL DEFAULT 99.9,
   vivo BOOLEAN DEFAULT TRUE,
   data_criacao DATETIME,
   FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
@@ -45,6 +46,18 @@ CREATE TABLE nomes_sobrenomes (
   nomes_masculinos VARCHAR(50),
   sobrenomes VARCHAR(50)
 );
+
+:::::Trigger para matar o PERSONAGEM Mysql:::::
+DELIMITER //
+CREATE TRIGGER trg_atualiza_vivo BEFORE UPDATE ON personagem
+FOR EACH ROW
+BEGIN
+    IF NEW.vida_personagem <= 0 THEN
+        SET NEW.vivo = FALSE;
+    END IF;
+END //
+DELIMITER ;
+
 
 :::::Adicionar nomes:::::
 INSERT INTO nomes_sobrenomes (nomes_femininos, nomes_masculinos, sobrenomes) VALUES

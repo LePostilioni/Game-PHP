@@ -1,17 +1,12 @@
 <?php
 include_once 'template.php';
 // numero do dado lançado
-$dadolancado = "0";
-?>
+$dado_lancado = "0";
 
-<head>
-    <title>Página do jogo</title>
-</head>
-
-<body>
-    <!-- Verifica se está logado -->
-    <?php if (!isset($_SESSION["logado"])) : ?>
-        <!-- Se não estiver logado -->
+// Verifica se está logado
+if (!isset($_SESSION["logado"])) {
+    // Se não estiver logado
+    echo '
         <div class="container text-center position-absolute top-50 start-50 translate-middle">
             <div class="row">
                 <div class="col-md-6 offset-md-3">
@@ -23,8 +18,10 @@ $dadolancado = "0";
                 </div>
             </div>
         </div>
-        <?php elseif ($_SESSION["char_criado"] == 0) : ?>
-        <!-- Se não tiver personagem criado -->
+    ';
+} elseif ($_SESSION["char_criado"] == 0) {
+    // Se não tiver personagem criado
+    echo '
         <div class="container text-center position-absolute top-50 start-50 translate-middle">
             <div class="row">
                 <div class="col-md-6 offset-md-3">
@@ -37,19 +34,57 @@ $dadolancado = "0";
                 </div>
             </div>
         </div>
-    <?php else : ?>
-        <!-- Se Já tiver logado e com char criado -->
+    ';
+} else {
+    // Se já tiver logado e com char criado
+    // Obtém informações do personagem
+    $query = "SELECT nome_personagem, sobrenome_materno, sobrenome_paterno, sexo, vivo, vida_personagem FROM personagem WHERE id_usuario = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $_SESSION["id"]);
+    $stmt->execute();
+    $stmt->bind_result($nome_personagem, $sobrenome_materno, $sobrenome_paterno, $sexo, $vivo, $vida_personagem);
+    $stmt->fetch();
+    $stmt->close();
+
+    $sexo_texto = ($sexo === 0) ? "Fêmea" : "Macho";
+    $nome_completo = $nome_personagem . " " . $sobrenome_materno . " " . $sobrenome_paterno;
+
+    // Lógica de suicídio do personagem
+    if (isset($_POST["suicidio"])) {
+        // Atualiza o personagem no banco de dados
+        $query = "UPDATE personagem SET vivo = 0, vida_personagem = 0 WHERE id_usuario = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $_SESSION["id"]);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    echo '
         <div class="container text-center">
             <div class="row">
                 <div class="col-md-6 offset-md-3">
                     <h1>Bora jogar!</h1>
-                    <h3>Bem-vindo(a), <?php echo $_SESSION["nome_completo"]; ?>!</h3>
+                    <h3>Bem-vindo(a), ' . $nome_completo . '!</h3>
+                    <h4>Sexo: ' . $sexo_texto . '</h4>
+                    <h4>Vivo: ' . ($vivo ? "Sim" : "Não") . '</h4>
+                    <h4>Vida: ' . $vida_personagem . ' / 99.9</h4>
+                    <br>';
+                    if ($vivo) {
+                        echo '
+                    <form method="post">
+                        <button type="submit" name="suicidio" class="btn btn-danger">Suicidar-se</button>
+                        </form>
+                        <br>
+                        ';
+}
+    echo '
+
                     <div class="text-center">
                         <a href="index.php" class="btn btn-outline-dark botao_maior">Voltar</a>
                     </div>
                 </div>
             </div>
         </div>
-    <?php endif; ?>
-</body>
-</html>
+    ';
+}
+?>
