@@ -17,3 +17,14 @@ CREATE TABLE `usuarios` (
 
 ALTER TABLE `usuarios`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+
+
+CREATE TABLE 'personagem' (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  id_usuario INT,
+  nome VARCHAR(50),
+  vivo BOOLEAN DEFAULT TRUE,
+  data_criacao DATETIME,
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+);

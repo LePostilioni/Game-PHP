@@ -89,12 +89,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login"])) {
         $message2 = "<br><span style='font-weight: bold; color: green;'>Você está logado</span>";
 
         // Atualizar as colunas logado_sql e ultimo_login
-        $id_usuario = $row["id"];
-        $_SESSION["id_usuario"] = $id_usuario;
-        $atualizarLoginSql = "UPDATE usuarios SET logado_sql = 1 WHERE id = $id_usuario";
+        $id = $row["id"];
+        $_SESSION["id"] = $id;
+        $atualizarLoginSql = "UPDATE usuarios SET logado_sql = 1 WHERE id = $id";
         $conn->query($atualizarLoginSql);
 
-        $atualizarUltimoLoginSql = "UPDATE usuarios SET ultimo_login = NOW() WHERE id = $id_usuario";
+        $atualizarUltimoLoginSql = "UPDATE usuarios SET ultimo_login = NOW() WHERE id = $id";
         $conn->query($atualizarUltimoLoginSql);
 
         // Redirecionar para a página atual

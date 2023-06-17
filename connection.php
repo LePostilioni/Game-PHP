@@ -57,10 +57,10 @@ if (isset($_SESSION["confirmar_senha"])) {
 } else {
     $confirmar_senha = 'nenhum';
 }
-if (isset($_SESSION["id_usuario"])) {
-    $id_usuario = $_SESSION["id_usuario"];
+if (isset($_SESSION["id"])) {
+    $id = $_SESSION["id"];
 } else {
-    $id_usuario = 'nenhum';
+    $id = 'nenhum';
 }
 if (isset($_SESSION["ultimo_login"])) {
     $ultimo_login = $_SESSION["ultimo_login"];

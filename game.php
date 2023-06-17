@@ -29,7 +29,7 @@ $dadolancado = "0";
             <div class="row">
                 <div class="col-md-6 offset-md-3">
                     <br>
-                    <h1 class="font-weight-bold text-danger">Você não tem personagem para jogar!</h1>
+                    <h1 class="font-weight-bold text-danger">Você não tem personagem vivo para jogar!</h1>
                     <hr>
                     <a class="btn btn-outline-dark botao_menor" href="createchar.php">Criar agora!</a>
                     <a class="btn btn-outline-dark botao_menor" href="index.php">Voltar</a>
