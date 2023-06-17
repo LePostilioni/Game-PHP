@@ -19,12 +19,33 @@ ALTER TABLE `usuarios`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 
+:::::Criação da tabela PERSONAGEM Mysql:::::
 
-CREATE TABLE 'personagem' (
-  id INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE personagem (
+  id_personagem INT PRIMARY KEY AUTO_INCREMENT,
   id_usuario INT,
-  nome VARCHAR(50),
+  nome_personagem VARCHAR(30),
+  sobrenome_materno VARCHAR(30),
+  sobrenome_paterno VARCHAR(30),
+  sexo BOOLEAN DEFAULT TRUE,
   vivo BOOLEAN DEFAULT TRUE,
   data_criacao DATETIME,
   FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
 );
+
+
+:::::DELETAR tabela PERSONAGEM Mysql:::::
+DROP TABLE personagem;
+
+:::::Criar tabela de nomes e sobrenomes PERSONAGEM Mysql:::::
+
+CREATE TABLE nomes_sobrenomes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nomes_femininos VARCHAR(50),
+  nomes_masculinos VARCHAR(50),
+  sobrenomes VARCHAR(50)
+);
+
+:::::Adicionar nomes:::::
+INSERT INTO nomes_sobrenomes (nomes_femininos, nomes_masculinos, sobrenomes) VALUES
+  ('Fulana', 'Beltrano', 'Ciclano');
