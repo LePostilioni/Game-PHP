@@ -31,6 +31,7 @@ CREATE TABLE personagem (
   vida_personagem DECIMAL(3,1) NOT NULL DEFAULT 99.9,
   vivo BOOLEAN DEFAULT TRUE,
   data_criacao DATETIME,
+  data_desencarne DATETIME DEFAULT NULL,
   FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
 );
 

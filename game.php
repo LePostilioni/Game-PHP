@@ -1,7 +1,5 @@
 <?php
 include_once 'template.php';
-// numero do dado lançado
-$dado_lancado = "0";
 
 // Verifica se está logado
 if (!isset($_SESSION["logado"])) {
@@ -59,32 +57,71 @@ if (!isset($_SESSION["logado"])) {
         $stmt->close();
     }
 
-    echo '
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-md-6 offset-md-3">
-                    <h1>Bora jogar!</h1>
-                    <h3>Bem-vindo(a), ' . $nome_completo . '!</h3>
-                    <h4>Sexo: ' . $sexo_texto . '</h4>
-                    <h4>Vivo: ' . ($vivo ? "Sim" : "Não") . '</h4>
-                    <h4>Vida: ' . $vida_personagem . ' / 99.9</h4>
-                    <br>';
-                    if ($vivo) {
-                        echo '
-                    <form method="post">
-                        <button type="submit" name="suicidio" class="btn btn-danger">Suicidar-se</button>
+    if ($vivo) {
+        echo '
+            <div class="container text-center">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <h1>Bora jogar!</h1>
+                        <h3>Bem-vindo(a), ' . $nome_completo . '!</h3>
+                        <h4>Sexo: ' . $sexo_texto . '</h4>
+                        <h4>Vivo: ' . ($vivo ? "Sim" : "Não") . '</h4>
+                        <h4>Vida: ' . $vida_personagem . ' / 99.9</h4>
+                        <br>
+                        <form method="post">
+                            <button type="submit" name="suicidio" class="btn btn-danger">Suicidar-se</button>
                         </form>
                         <br>
-                        ';
-}
-    echo '
-
-                    <div class="text-center">
-                        <a href="index.php" class="btn btn-outline-dark botao_maior">Voltar</a>
+                        <div class="text-center">
+                            <a href="index.php" class="btn btn-outline-dark botao_maior">Voltar</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    ';
+        ';
+    } else {
+        // Personagem está "morto"
+        echo '
+            <div class="container text-center">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <h3>Bem-vindo(a), ' . $nome_completo . '!</h3>
+                        <h4>Sexo: ' . $sexo_texto . '</h4>
+                        <h4>Vivo: ' . ($vivo ? "Sim" : "Não") . '</h4>
+                        <h4>Vida: ' . $vida_personagem . ' / 99.9</h4>
+                        <h1>Seu personagem está morto!</h1>
+                        <h3>Deseja reencarnar?</h3>
+                        <form method="post">
+                            <button type="submit" name="reencarnar" class="btn btn-success">Reencarnar</button>
+                        </form>
+                        <br>
+                        <div class="text-center">
+                            <a href="index.php" class="btn btn-outline-dark botao_maior">Voltar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ';
+
+        if (isset($_POST["reencarnar"])) {
+            // Atualiza a data de desencarne do personagem
+            $query = "UPDATE personagem SET data_desencarne = NOW() WHERE id_usuario = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("i", $_SESSION["id"]);
+            $stmt->execute();
+            $stmt->close();
+
+            // Atualiza a flag de personagem criado do usuário
+            $query = "UPDATE usuarios SET char_criado = 0 WHERE id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("i", $_SESSION["id"]);
+            $stmt->execute();
+            $stmt->close();
+            $_SESSION["char_criado"] = "0";
+
+    // Redirecionar para a página atual
+    echo '<script>window.location.href = window.location.href;</script>';
+        }
+    }
 }
 ?>
