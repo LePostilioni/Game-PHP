@@ -25,13 +25,19 @@ if (isset($_POST['adicionar_nomes'])) {
         $result = $stmt->get_result();
 
         if ($result->num_rows === 0) {
-            // Insere os nomes na tabela nomes_sobrenomes
-            $query = "INSERT INTO nomes_sobrenomes (nomes_femininos, nomes_masculinos, sobrenomes) VALUES (?, ?, ?)";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("sss", $nomes_femininos, $nomes_masculinos, $sobrenomes);
-            $stmt->execute();
-            $stmt->close();
-            $message = "Nomes adicionados com sucesso!";
+            // Verifica o padrão dos campos de nome
+            $pattern = "/^[A-Za-zÀ-ÿ\s-]{4,20}$/";
+            if (preg_match($pattern, $nomes_femininos) && preg_match($pattern, $nomes_masculinos) && preg_match($pattern, $sobrenomes)) {
+                // Insere os nomes na tabela nomes_sobrenomes
+                $query = "INSERT INTO nomes_sobrenomes (nomes_femininos, nomes_masculinos, sobrenomes) VALUES (?, ?, ?)";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param("sss", $nomes_femininos, $nomes_masculinos, $sobrenomes);
+                $stmt->execute();
+                $stmt->close();
+                $message = "Nomes adicionados com sucesso!";
+            } else {
+                $message = "<span style='color: #f34336;'>Os nomes devem conter entre 4 e 20 caracteres, aceitando apenas letras, espaços, traços e acentos.</span>";
+            }
         } else {
             $message = "<span style='color: #f34336;'>Os nomes já existem na tabela.</span>";
         }
