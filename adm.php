@@ -2,6 +2,7 @@
 include_once 'template.php';
 
 $message = "";
+
 // Consulta SQL para contar os usuários logados
 $sql = "SELECT COUNT(*) as total FROM usuarios WHERE logado_sql = 1";
 $result = $conn->query($sql);
@@ -16,13 +17,24 @@ if (isset($_POST['adicionar_nomes'])) {
 
     // Verifica se os campos foram preenchidos
     if (!empty($nomes_femininos) && !empty($nomes_masculinos) && !empty($sobrenomes)) {
-        // Insere os nomes na tabela nomes_sobrenomes
-        $query = "INSERT INTO nomes_sobrenomes (nomes_femininos, nomes_masculinos, sobrenomes) VALUES (?, ?, ?)";
+        // Verifica se o nome já existe na tabela nomes_sobrenomes
+        $query = "SELECT * FROM nomes_sobrenomes WHERE nomes_femininos = ? OR nomes_masculinos = ? OR sobrenomes = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("sss", $nomes_femininos, $nomes_masculinos, $sobrenomes);
         $stmt->execute();
-        $stmt->close();
-        $message = "Nomes adicionados com sucesso!";
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            // Insere os nomes na tabela nomes_sobrenomes
+            $query = "INSERT INTO nomes_sobrenomes (nomes_femininos, nomes_masculinos, sobrenomes) VALUES (?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("sss", $nomes_femininos, $nomes_masculinos, $sobrenomes);
+            $stmt->execute();
+            $stmt->close();
+            $message = "Nomes adicionados com sucesso!";
+        } else {
+            $message = "<span style='color: #f34336;'>Os nomes já existem na tabela.</span>";
+        }
         $_SESSION["message"] = $message;
     }
 }
@@ -113,31 +125,30 @@ if (isset($_POST['adicionar_nomes'])) {
                         <button type="button" class="btn btn-outline-dark botao_menor" onclick="show_adm_tela()">Voltar</button>
                     </div>
 
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="nomes_tela" style="display: none;">
+                        <h1>Adicionar Nomes</h1>
+                        <div class="form-group">
+                            <i class="fa-solid fa-user"></i>
+                            <label for="nomes_femininos">Nome Feminino:</label>
+                            <input type="text" class="form-control" id="nomes_femininos" name="nomes_femininos" placeholder="Fulana" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
+                        </div>
+                        <div class="form-group">
+                            <i class="fa-solid fa-user"></i>
+                            <label for="nomes_masculinos">Nome Masculino:</label>
+                            <input type="text" class="form-control" id="nomes_masculinos" name="nomes_masculinos" placeholder="Beltrano" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
+                        </div>
+                        <div class="form-group">
+                            <i class="fa-solid fa-user"></i>
+                            <label for="sobrenomes">Sobrenome:</label>
+                            <input type="text" class="form-control" id="sobrenomes" name="sobrenomes" placeholder="De Tal" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
+                        </div>
+                        <small>Somente letras e acentos. Mínimo de 4 caracteres e máximo de 20.</small>
+                        <br>
+                        <button type="submit" class="btn btn-outline-dark botao_menor" name="adicionar_nomes">Adicionar Nomes</button>
+                        <br><br>
+                        <button type="button" class="btn btn-outline-dark botao_menor" onclick="show_adm_tela()">Voltar</button>
+                    </form>
 
-                                <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="nomes_tela" style="display: none;">
-                                    <h1>Adicionar Nomes</h1>
-                                    <div class="form-group">
-                                    <i class="fa-solid fa-user"></i>
-                                        <label for="nomes_femininos">Nome Feminino:</label>
-                                        <input type="text" class="form-control" id="nomes_femininos" name="nomes_femininos" placeholder="Fulana" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
-                                    </div>
-                                    <div class="form-group">
-                                    <i class="fa-solid fa-user"></i>
-                                        <label for="nomes_masculinos">Nome Masculino:</label>
-                                        <input type="text" class="form-control" id="nomes_masculinos" name="nomes_masculinos" placeholder="Beltrano" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
-                                    </div>
-                                    <div class="form-group">
-                                    <i class="fa-solid fa-user"></i>
-                                        <label for="sobrenomes">Sobrenome:</label>
-                                        <input type="text" class="form-control" id="sobrenomes" name="sobrenomes" placeholder="De Tal" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
-                                    </div>
-                                    <small>Somente letras e acentos. Mínimo de 4 caracteres e máximo de 20.</small>
-                                    <br>
-                                    <button type="submit" class="btn btn-outline-dark botao_menor" name="adicionar_nomes">Adicionar Nomes</button>
-                                    <br><br>
-                                    <button type="button" class="btn btn-outline-dark botao_menor" onclick="show_adm_tela()">Voltar</button>
-                                </form>
-                                
                     <hr>
                     <div class="text-center">
                         <a class="btn btn-outline-dark botao_menor" href="game.php">Jogar</a>
