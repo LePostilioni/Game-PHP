@@ -1,6 +1,6 @@
 <?php
 // Versão do código
-$code_version = '1.3.7';
+$code_version = '1.3.8';
 
 // Define o tempo máximo de vida da sessão em segundos (30 minutos)
 session_set_cookie_params(1800); // 1800 segundos = 30 minutos

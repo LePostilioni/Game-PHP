@@ -1,11 +1,31 @@
 <?php
 include_once 'template.php';
 
+$message = "";
 // Consulta SQL para contar os usuários logados
 $sql = "SELECT COUNT(*) as total FROM usuarios WHERE logado_sql = 1";
 $result = $conn->query($sql);
 $row = $result->fetch_assoc();
 $numero_usuarios_logados = $row['total'];
+
+// Adiciona os nomes ao banco de dados
+if (isset($_POST['adicionar_nomes'])) {
+    $nomes_femininos = $_POST['nomes_femininos'];
+    $nomes_masculinos = $_POST['nomes_masculinos'];
+    $sobrenomes = $_POST['sobrenomes'];
+
+    // Verifica se os campos foram preenchidos
+    if (!empty($nomes_femininos) && !empty($nomes_masculinos) && !empty($sobrenomes)) {
+        // Insere os nomes na tabela nomes_sobrenomes
+        $query = "INSERT INTO nomes_sobrenomes (nomes_femininos, nomes_masculinos, sobrenomes) VALUES (?, ?, ?)";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("sss", $nomes_femininos, $nomes_masculinos, $sobrenomes);
+        $stmt->execute();
+        $stmt->close();
+        $message = "Nomes adicionados com sucesso!";
+        $_SESSION["message"] = $message;
+    }
+}
 ?>
 
 <head>
@@ -32,6 +52,9 @@ $numero_usuarios_logados = $row['total'];
         <div class="container text-center">
             <div class="row">
                 <div class="col-md-6 offset-md-3">
+                    <div class="message">
+                        <?php echo $message; ?>
+                    </div>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="adm_tela" style="display: block;">
                         <h1>Página de Administração</h1>
                         <h3>Seja muito bem-vindo(a) administrador, <?php echo $nome; ?>!</h3>
@@ -40,6 +63,8 @@ $numero_usuarios_logados = $row['total'];
                         <h4>Seu último login: <?php echo $_SESSION["ultimo_login"]; ?></h4>
                         <h4>Sua última atividade: <?php echo $_SESSION["last_activity"]; ?></h4>
                         <button type="button" class="btn btn-outline-dark botao_menor" onclick="show_mologin_form()">Mostrar Usuários</button>
+                        <br><br>
+                        <button type="button" class="btn btn-outline-dark botao_menor" onclick="show_nomes_tela()">Adicionar Nomes e Sobrenomes ao banco</button>
                     </form>
 
                     <div id="lista-usuarios" style="display: none;">
@@ -88,6 +113,31 @@ $numero_usuarios_logados = $row['total'];
                         <button type="button" class="btn btn-outline-dark botao_menor" onclick="show_adm_tela()">Voltar</button>
                     </div>
 
+
+                                <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="nomes_tela" style="display: none;">
+                                    <h1>Adicionar Nomes</h1>
+                                    <div class="form-group">
+                                    <i class="fa-solid fa-user"></i>
+                                        <label for="nomes_femininos">Nome Feminino:</label>
+                                        <input type="text" class="form-control" id="nomes_femininos" name="nomes_femininos" placeholder="Fulana" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
+                                    </div>
+                                    <div class="form-group">
+                                    <i class="fa-solid fa-user"></i>
+                                        <label for="nomes_masculinos">Nome Masculino:</label>
+                                        <input type="text" class="form-control" id="nomes_masculinos" name="nomes_masculinos" placeholder="Beltrano" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
+                                    </div>
+                                    <div class="form-group">
+                                    <i class="fa-solid fa-user"></i>
+                                        <label for="sobrenomes">Sobrenome:</label>
+                                        <input type="text" class="form-control" id="sobrenomes" name="sobrenomes" placeholder="De Tal" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
+                                    </div>
+                                    <small>Somente letras e acentos. Mínimo de 4 caracteres e máximo de 20.</small>
+                                    <br>
+                                    <button type="submit" class="btn btn-outline-dark botao_menor" name="adicionar_nomes">Adicionar Nomes</button>
+                                    <br><br>
+                                    <button type="button" class="btn btn-outline-dark botao_menor" onclick="show_adm_tela()">Voltar</button>
+                                </form>
+                                
                     <hr>
                     <div class="text-center">
                         <a class="btn btn-outline-dark botao_menor" href="game.php">Jogar</a>
@@ -101,11 +151,19 @@ $numero_usuarios_logados = $row['total'];
             function show_adm_tela() {
                 document.getElementById('adm_tela').style.display = 'block';
                 document.getElementById('lista-usuarios').style.display = 'none';
+                document.getElementById('nomes_tela').style.display = 'none';
             }
 
             function show_mologin_form() {
                 document.getElementById('adm_tela').style.display = 'none';
                 document.getElementById('lista-usuarios').style.display = 'block';
+                document.getElementById('nomes_tela').style.display = 'none';
+            }
+
+            function show_nomes_tela() {
+                document.getElementById('adm_tela').style.display = 'none';
+                document.getElementById('lista-usuarios').style.display = 'none';
+                document.getElementById('nomes_tela').style.display = 'block';
             }
         </script>
     <?php endif; ?>
