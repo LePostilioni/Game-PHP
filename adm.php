@@ -44,6 +44,37 @@ if (isset($_POST['adicionar_nomes'])) {
         $_SESSION["message"] = $message;
     }
 }
+
+$nome_feminino_api = gerarnome_feminino_api();
+$nome_masculino_api = gerarnome_masculino_api();
+$sobrenome_api = gerarsobrenome_api();
+// Função para gerar um nome feminino aleatório
+function gerarnome_feminino_api()
+{
+    $url = "https://randomuser.me/api/?gender=female&nat=br";
+    $data = file_get_contents($url);
+    $result = json_decode($data, true);
+    return $result['results'][0]['name']['first'];
+}
+
+// Função para gerar um nome masculino aleatório
+function gerarnome_masculino_api()
+{
+    $url = "https://randomuser.me/api/?gender=male&nat=br";
+    $data = file_get_contents($url);
+    $result = json_decode($data, true);
+    return $result['results'][0]['name']['first'];
+}
+
+// Função para gerar um sobrenome aleatório
+function gerarsobrenome_api()
+{
+    $url = "https://randomuser.me/api/?nat=br";
+    $data = file_get_contents($url);
+    $result = json_decode($data, true);
+    return $result['results'][0]['name']['last'];
+}
+
 ?>
 
 <head>
@@ -80,9 +111,11 @@ if (isset($_POST['adicionar_nomes'])) {
                         <h4>Usuários logados no momento: <?php echo $numero_usuarios_logados; ?></h4>
                         <h4>Seu último login: <?php echo $_SESSION["ultimo_login"]; ?></h4>
                         <h4>Sua última atividade: <?php echo $_SESSION["last_activity"]; ?></h4>
+                        <br>
                         <button type="button" class="btn btn-outline-dark botao_menor" onclick="show_mologin_form()">Mostrar Usuários</button>
                         <br><br>
-                        <button type="button" class="btn btn-outline-dark botao_menor" onclick="show_nomes_tela()">Adicionar Nomes e Sobrenomes ao banco</button>
+                        <button type="button" class="btn btn-outline-dark botao_menor laranjinha" onclick="show_nomes_tela()">Adicionar Nomes e Sobrenomes ao banco</button>
+                        <br>
                     </form>
 
                     <div id="lista-usuarios" style="display: none;">
@@ -136,17 +169,17 @@ if (isset($_POST['adicionar_nomes'])) {
                         <div class="form-group">
                             <i class="fa-solid fa-user"></i>
                             <label for="nomes_femininos">Nome Feminino:</label>
-                            <input type="text" class="form-control" id="nomes_femininos" name="nomes_femininos" placeholder="Fulana" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
+                            <input type="text" class="form-control" id="nomes_femininos" name="nomes_femininos" placeholder="Fulana" value="<?php echo $nome_feminino_api; ?>" pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
                         </div>
                         <div class="form-group">
                             <i class="fa-solid fa-user"></i>
                             <label for="nomes_masculinos">Nome Masculino:</label>
-                            <input type="text" class="form-control" id="nomes_masculinos" name="nomes_masculinos" placeholder="Beltrano" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
+                            <input type="text" class="form-control" id="nomes_masculinos" name="nomes_masculinos" placeholder="Beltrano" value="<?php echo $nome_masculino_api; ?>" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
                         </div>
                         <div class="form-group">
                             <i class="fa-solid fa-user"></i>
                             <label for="sobrenomes">Sobrenome:</label>
-                            <input type="text" class="form-control" id="sobrenomes" name="sobrenomes" placeholder="De Tal" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
+                            <input type="text" class="form-control" id="sobrenomes" name="sobrenomes" placeholder="De Tal" value="<?php echo $sobrenome_api; ?>" required pattern="[A-Za-zÀ-ÿ\s-]{4,20}">
                         </div>
                         <small>Somente letras e acentos. Mínimo de 4 caracteres e máximo de 20.</small>
                         <br>
@@ -186,5 +219,3 @@ if (isset($_POST['adicionar_nomes'])) {
     <?php endif; ?>
 
 </body>
-
-</html>
