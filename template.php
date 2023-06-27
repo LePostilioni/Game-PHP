@@ -1,6 +1,6 @@
 <?php
-// Versão do código - V:1.3.12 - adição de nomes com api
-$code_version = '1.3.12';
+// Versão do código - V:1.3.13 - resolvido bug do personagem
+$code_version = '1.3.13';
 
 // Define o tempo máximo de vida da sessão em segundos (30 minutos)
 session_set_cookie_params(1800); // 1800 segundos = 30 minutos
@@ -152,7 +152,7 @@ if (isset($_POST['sair'])) {
             }
         }
 
-        .informacoesdev {
+        .console_dev {
             padding-left: 10px;
             font-size: 12px;
             color: greenyellow;
@@ -164,8 +164,8 @@ if (isset($_POST['sair'])) {
 <body data-bs-theme="dark">
     <!-- Se for administrador vai aparecer informações em cima -->
     <?php if ($gm_level > 0) : ?>
-        <div class="informacoesdev"> Informações ao Desenvolvedor:<br>Logado: <?php echo (!$logado) ? "Não" : "Sim"; ?> / ADM: <?php echo (!$gm_level > 0) ? "Não" : "Sim"; ?> / Nome: <?php echo $nome; ?> / E-mail: <?php echo $email; ?> / Senha: <?php echo $senha; ?> / ID: <?php echo $_SESSION["id"]; ?> / Último login: <?php echo $ultimo_login; ?>
-            <br>Senha atual: <?php echo $senha_atual; ?> / Nova senha: <?php echo $nova_senha; ?> / Confirma senha: <?php echo $confirmar_senha; ?>
+        <div class="console_dev"> Informações ao Desenvolvedor:<br>Logado: <?php echo (!$logado) ? "Não" : "Sim"; ?> / ADM: <?php echo (!$gm_level > 0) ? "Não" : "Sim"; ?> / Nome: <?php echo $nome; ?> / E-mail: <?php echo $email; ?> / Senha: <?php echo $senha; ?> / ID: <?php echo $_SESSION["id"]; ?> / Último login: <?php echo $ultimo_login; ?>
+            <br>Senha atual: <?php echo $senha_atual; ?> / Nova senha: <?php echo $nova_senha; ?> / Confirma senha: <?php echo $confirmar_senha; ?> / Nome Personagem: <?php echo $nome_personagem; ?> / Nome Personagem session: <?php echo $_SESSION["nome_personagem"] ?>
         </div>
     <?php endif; ?>
     <!-- Botão de mudar o tema dark ou light -->

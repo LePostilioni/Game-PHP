@@ -142,7 +142,8 @@ if (!isset($_SESSION["logado"])) {
             <div class="row">
                 <div class="col-md-6 offset-md-3">
                     <br>
-                    <h1 class="font-weight-bold text-danger">Olá ' . $nome_completo . ', você é ' . $sexo_texto . ' da raça Drauxy. Vamos começar sua jornada?</h1>
+                    <h1 class="font-weight-bold text-danger">Olá ' . $nome_completo . ',</h1>
+                    <h2>você é ' . $sexo_texto . ' da raça Drauxy. Vamos começar sua jornada?</h2>
                     <hr>
                     <a class="btn btn-outline-dark botao_maior" href="game.php">Jogar</a>
                 </div>

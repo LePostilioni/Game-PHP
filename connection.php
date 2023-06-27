@@ -70,7 +70,7 @@ if (isset($_SESSION["ultimo_login"])) {
 if (isset($_SESSION["nome_personagem"])) {
     $nome_personagem = $_SESSION["nome_personagem"];
 } else {
-    $nome_personagem = " ";
+    $nome_personagem = 'nenhum';
 }
 
 // Estabelecer a conexão

@@ -35,8 +35,8 @@ if (!isset($_SESSION["logado"])) {
     ';
 } else {
     // Se já tiver logado e com char criado
-    // Obtém informações do personagem
-    $query = "SELECT nome_personagem, sobrenome_materno, sobrenome_paterno, sexo, vivo, vida_personagem FROM personagem WHERE id_usuario = ?";
+    // Obtém informações do último personagem criado
+    $query = "SELECT nome_personagem, sobrenome_materno, sobrenome_paterno, sexo, vivo, vida_personagem FROM personagem WHERE id_usuario = ? ORDER BY id_personagem DESC LIMIT 1";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $_SESSION["id"]);
     $stmt->execute();
