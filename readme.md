@@ -32,6 +32,10 @@ CREATE TABLE personagem (
   vivo BOOLEAN DEFAULT TRUE,
   data_criacao DATETIME,
   data_desencarne DATETIME DEFAULT NULL,
+  local_id INT(5) DEFAULT 0,
+  indo_para INT(5) DEFAULT NULL,
+  coordenada_x DOUBLE DEFAULT 0,
+  coordenada_y DOUBLE DEFAULT 0;
   FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
 );
 

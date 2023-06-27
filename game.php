@@ -36,13 +36,13 @@ if (!isset($_SESSION["logado"])) {
 } else {
     // Se já tiver logado e com char criado
     // Obtém informações do último personagem criado
-    $query = "SELECT nome_personagem, sobrenome_materno, sobrenome_paterno, sexo, vivo, vida_personagem FROM personagem WHERE id_usuario = ? ORDER BY id_personagem DESC LIMIT 1";
+    $query = "SELECT nome_personagem, sobrenome_materno, sobrenome_paterno, sexo, vivo, vida_personagem, local_id, indo_para, coordenada_x, coordenada_y FROM personagem WHERE id_usuario = ? ORDER BY id_personagem DESC LIMIT 1";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $_SESSION["id"]);
     $stmt->execute();
-    $stmt->bind_result($nome_personagem, $sobrenome_materno, $sobrenome_paterno, $sexo, $vivo, $vida_personagem);
+    $stmt->bind_result($nome_personagem, $sobrenome_materno, $sobrenome_paterno, $sexo, $vivo, $vida_personagem, $local_id, $indo_para, $coordenada_x, $coordenada_y);
     $stmt->fetch();
-    $stmt->close();
+    $stmt->close();    
 
     $sexo_texto = ($sexo === 0) ? "Fêmea" : "Macho";
     $nome_completo = $nome_personagem . " " . $sobrenome_materno . " " . $sobrenome_paterno;
@@ -59,26 +59,30 @@ if (!isset($_SESSION["logado"])) {
 
     if ($vivo) {
         echo '
-            <div class="container text-center">
-                <div class="row">
-                    <div class="col-md-6 offset-md-3">
-                        <h1>Bora jogar!</h1>
-                        <h3>Bem-vindo(a), ' . $nome_completo . '!</h3>
-                        <h4>Sexo: ' . $sexo_texto . '</h4>
-                        <h4>Vivo: ' . ($vivo ? "Sim" : "Não") . '</h4>
-                        <h4>Vida: ' . $vida_personagem . ' / 99.9</h4>
-                        <br>
-                        <form method="post">
-                            <button type="submit" name="suicidio" class="btn btn-danger">Suicidar-se</button>
-                        </form>
-                        <br>
-                        <div class="text-center">
-                            <a href="index.php" class="btn btn-outline-dark botao_maior">Voltar</a>
-                        </div>
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <h1>Bora jogar!</h1>
+                    <h3>Bem-vindo(a), ' . $nome_completo . '!</h3>
+                    <h4>Sexo: ' . $sexo_texto . '</h4>
+                    <h4>Vivo: ' . ($vivo ? "Sim" : "Não") . '</h4>
+                    <h4>Vida: ' . $vida_personagem . ' / 99.9</h4>
+                    <h4>Você está em: ' . $local_id . '</h4>
+                    <h4>Coordenada X: ' . $coordenada_x . '</h4>
+                    <h4>Coordenada Y: ' . $coordenada_y . '</h4>
+                    <h4>Indo para: ' . ($indo_para ? $indo_para : "Nenhum lugar") . '</h4>
+                    <br>
+                    <form method="post">
+                        <button type="submit" name="suicidio" class="btn btn-danger">Suicidar-se</button>
+                    </form>
+                    <br>
+                    <div class="text-center">
+                        <a href="index.php" class="btn btn-outline-dark botao_maior">Voltar</a>
                     </div>
                 </div>
             </div>
-        ';
+        </div>
+    ';    
     } else {
         // Personagem está "morto"
         echo '

@@ -1,6 +1,6 @@
 <?php
-// Versão do código - V:1.3.13 - resolvido bug do personagem
-$code_version = '1.3.13';
+// Versão do código - V:1.4.1 - adicionado local ao personagem
+$code_version = '1.4.1';
 
 // Define o tempo máximo de vida da sessão em segundos (30 minutos)
 session_set_cookie_params(1800); // 1800 segundos = 30 minutos
