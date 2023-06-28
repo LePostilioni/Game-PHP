@@ -1,9 +1,27 @@
 <?php
 include_once 'template.php';
 
-// Função para criar um personagem aleatório
+// Função para criar um personagem aleatório em um local específico
 function criarPersonagemAleatorio($conn, $id)
 {
+    // Rolar os 4 dados d20 dos elementos
+    $d20_rolado_terra = mt_rand(1, 20);
+    $d20_rolado_agua = mt_rand(1, 20);
+    $d20_rolado_fogo = mt_rand(1, 20);
+    $d20_rolado_ar = mt_rand(1, 20);
+
+    // Verificar o resultado do d20 para determinar o local do personagem
+    if ($d20_rolado_terra <= 6) {
+        // Nasce no local_id 1
+        $local_id = 1;
+    } elseif ($d20_rolado_terra <= 12) {
+        // Nasce no local_id 2
+        $local_id = 2;
+    } else {
+        // Nasce no local_id 3
+        $local_id = 3;
+    }
+
     // Gerando o sexo aleatório (0 para feminino(40%), 1 para masculino(60%))
     $sexo = (mt_rand(1, 10) <= 6) ? 1 : 0;
 
@@ -27,12 +45,12 @@ function criarPersonagemAleatorio($conn, $id)
     $sobrenome_paterno = $sobrenome;
     $stmt->close();
 
-    // Inserindo um personagem aleatório na tabela "personagem"
-    $query = "INSERT INTO personagem (id_usuario, nome_personagem, sobrenome_materno, sobrenome_paterno, sexo, vivo, data_criacao) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    // Inserindo um personagem aleatório na tabela "personagem" com o local_id especificado
+    $query = "INSERT INTO personagem (id_usuario, nome_personagem, sobrenome_materno, sobrenome_paterno, sexo, vivo, data_criacao, local_id, d20_rolado_terra, d20_rolado_agua, d20_rolado_fogo, d20_rolado_ar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
     $vivo = true;
     $dataCriacao = date("Y-m-d H:i:s");
-    $stmt->bind_param("issssss", $id, $nome_personagem, $sobrenome_materno, $sobrenome_paterno, $sexo, $vivo, $dataCriacao);
+    $stmt->bind_param("issssssissss", $id, $nome_personagem, $sobrenome_materno, $sobrenome_paterno, $sexo, $vivo, $dataCriacao, $local_id, $d20_rolado_terra, $d20_rolado_agua, $d20_rolado_fogo, $d20_rolado_ar);
     $stmt->execute();
     $stmt->close();
 
@@ -106,32 +124,36 @@ if (!isset($_SESSION["logado"])) {
         if ($numPersonagensVivos > 0) {
             // Se o usuário já possui um personagem vivo
             echo '
-                <div class="container text-center position-absolute top-50 start-50 translate-middle">
-                    <div class="row">
-                        <div class="col-md-6 offset-md-3">
-                            <br>
-                            <h1 class="font-weight-bold text-danger">Você já possui um personagem vivo!</h1>
-                            <hr>
-                            <a class="btn btn-outline-dark botao_maior" href="game.php">Voltar</a>
-                        </div>
+            <div class="container text-center position-absolute top-50 start-50 translate-middle">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <br>
+                        <h1 class="font-weight-bold text-danger">Você já possui um personagem vivo!</h1>
+                        <hr>
+                        <a class="btn btn-outline-dark botao_maior" href="game.php">Voltar</a>
                     </div>
                 </div>
-            ';
+            </div>
+        ';
         } else {
-            // Se o usuário não possui nenhum personagem vivo, criar personagem aleatório
+
             criarPersonagemAleatorio($conn, $_SESSION["id"]);
         }
     }
 } else {
     // Se o usuário já tem personagem criado
     // Obtém informações do personagem
-    $query = "SELECT nome_personagem, sobrenome_materno, sobrenome_paterno, sexo FROM personagem WHERE id_usuario = ? AND vivo = TRUE";
+    $query = "SELECT p.nome_personagem, p.sobrenome_materno, p.sobrenome_paterno, p.sexo, p.d20_rolado_terra, p.d20_rolado_agua, p.d20_rolado_fogo, p.d20_rolado_ar, m.nome_local, m.coordenada_x, m.coordenada_y 
+    FROM personagem p 
+    JOIN mapa m ON p.local_id = m.id_local 
+    WHERE p.id_usuario = ? AND p.vivo = TRUE";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $_SESSION["id"]);
     $stmt->execute();
-    $stmt->bind_result($nome_personagem, $sobrenome_materno, $sobrenome_paterno, $sexo);
+    $stmt->bind_result($nome_personagem, $sobrenome_materno, $sobrenome_paterno, $sexo, $d20_rolado_terra, $d20_rolado_agua, $d20_rolado_fogo, $d20_rolado_ar, $nome_local, $coordenada_x, $coordenada_y);
     $stmt->fetch();
     $stmt->close();
+
 
     $sexo_texto = ($sexo === 0) ? "uma fêmea" : "um macho";
     $nome_completo = $nome_personagem . " " . $sobrenome_materno . " " . $sobrenome_paterno;
@@ -143,7 +165,12 @@ if (!isset($_SESSION["logado"])) {
                 <div class="col-md-6 offset-md-3">
                     <br>
                     <h1 class="font-weight-bold text-danger">Olá ' . $nome_completo . ',</h1>
-                    <h2>você é ' . $sexo_texto . ' da raça Drauxy. Vamos começar sua jornada?</h2>
+                    <h2>você é ' . $sexo_texto . ' da raça Drauxy. Você acabou de chegar em ' . $nome_local . ', coordenada X: ' . $coordenada_x . ' e Y: ' . $coordenada_y . ' pois tirou ' . $d20_rolado_terra . ' no D20.
+                    <br>D20 Elemento Terra: ' . $d20_rolado_terra . ',
+                    <br>D20 Elemento Água: ' . $d20_rolado_agua . ',
+                    <br>D20 Elemento Fogo: ' . $d20_rolado_fogo . ',
+                    <br>D20 Elemento Água: ' . $d20_rolado_ar . '.
+                    <br>Vamos começar sua jornada?</h2>
                     <hr>
                     <a class="btn btn-outline-dark botao_maior" href="game.php">Jogar</a>
                 </div>
@@ -156,4 +183,3 @@ if (!isset($_SESSION["logado"])) {
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 </html>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
